@@ -19,10 +19,10 @@ export default function Home() {
       </Head>
       <main>
         <div className="flex">
-          <div className="flex shrink-0 grow basis-auto flex-col items-end">
-            <div className="flex h-screen w-[200px] flex-col justify-between py-4">
+          <div className="hidden shrink basis-auto flex-col items-end xs:flex md:shrink-0 md:grow">
+            <div className="flex h-screen w-[100px] flex-col justify-between py-4 lg:w-[200px]">
               <div className="flex flex-col gap-5">
-                <div className="h-8">
+                <div className="flex h-8 justify-center lg:justify-normal">
                   <Twitter
                     size={30}
                     strokeWidth={1}
@@ -35,18 +35,14 @@ export default function Home() {
                     />
                   </Twitter>
                 </div>
-                <div className="flex">
-                  <div className="items-left flex flex-col">
-                    <div className="flex items-center gap-4">
-                      <HomeIcon size={30} />
-                      <span className="text-xl font-semibold text-primary">
-                        Home
-                      </span>
-                    </div>
-                  </div>
+                <div className="items-left flex items-center justify-center gap-4 lg:justify-normal">
+                  <HomeIcon size={30} />
+                  <span className="hidden text-xl font-semibold text-primary lg:block">
+                    Home
+                  </span>
                 </div>
               </div>
-              <div className="flex gap-3">
+              <div className="flex justify-center gap-3 lg:justify-normal">
                 <Avatar className="h-10 w-10">
                   <AvatarImage
                     src="https://github.com/astonlele.png"
@@ -54,16 +50,16 @@ export default function Home() {
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
-                <div className="flex flex-col text-sm">
+                <div className="hidden flex-col text-sm lg:flex ">
                   <span className="font-semibold">AsToN</span>
                   <span className="text-slate-500">@AsToN</span>
                 </div>
               </div>
             </div>
           </div>
-          <div className="flex shrink grow items-start">
-            <div className="w-[900px]">
-              <div className="h-screen w-[650px] break-all border-x">
+          <div className="flex grow items-start md:grow">
+            <div className="w-full xl:w-[900px]">
+              <div className="h-screen w-full break-all border-x md:w-[650px]">
                 <div className="border-b p-4">
                   <span className="text-xl font-semibold">Home</span>
                 </div>
