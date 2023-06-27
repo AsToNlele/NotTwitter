@@ -21,7 +21,7 @@ module.exports = {
         "2xl": "1400px",
       },
       fontFamily: {
-        sans: ['var(--font-inter)'],
+        sans: ['var(--font-inter)', "sans-serif", ...defaultTheme.fontFamily.sans],
       },
       colors: {
         border: "hsl(var(--border))",

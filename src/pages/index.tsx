@@ -14,6 +14,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "~/components/ui/sheet";
 
 export default function Home() {
   const [content, setContent] = useState<string>("");
@@ -85,9 +93,68 @@ export default function Home() {
             <div className="w-full xl:w-[900px]">
               <div className="h-screen w-full break-all border-x md:w-[650px]">
                 <div className="border-b p-4">
-                  <span className="text-xl font-semibold">Home</span>
+                  <div className="flex justify-between xs:hidden">
+                    <Sheet>
+                      <SheetTrigger asChild>
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage
+                            src="https://github.com/astonlele.png"
+                            alt="@shadcn"
+                          />
+                          <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                      </SheetTrigger>
+                      <SheetContent side="left">
+                        <SheetHeader>
+                          <SheetTitle className="text-left">
+                            Account Info
+                          </SheetTitle>
+                        </SheetHeader>
+                        <div className="mt-8 flex flex-col gap-4">
+                          <div className="flex flex-col gap-2">
+                            <Avatar className="h-10 w-10">
+                              <AvatarImage
+                                src="https://github.com/astonlele.png"
+                                alt="@shadcn"
+                              />
+                              <AvatarFallback>CN</AvatarFallback>
+                            </Avatar>
+                            <div className="text-md flex flex-col">
+                              <span className="font-semibold">AsToN</span>
+                              <span className="text-slate-500">@AsToN</span>
+                            </div>
+                          </div>
+                          <div className="flex gap-8 text-sm">
+                            <div className="flex gap-1 ">
+                              <span className="font-semibold">41</span>
+                              <span className="text-slate-500">Following</span>
+                            </div>
+                            <div className="flex gap-1">
+                              <span className="font-semibold">15</span>
+                              <span className="text-slate-500">Followers</span>
+                            </div>
+                          </div>
+                        </div>
+                      </SheetContent>
+                    </Sheet>
+                    <Twitter
+                      size={30}
+                      strokeWidth={1}
+                      fill="white"
+                      className="relative"
+                    >
+                      <X
+                        color="red"
+                        className="absolute left-0 top-0 h-full w-full"
+                      />
+                    </Twitter>
+                    <div className="h-10 w-10"></div>
+                  </div>
+                  <div className="hidden xs:block">
+                    <span className="text-xl font-semibold">Home</span>
+                  </div>
                 </div>
-                <div className="border-b p-4">
+                <div className="hidden border-b p-4 xs:block">
                   <div className="flex w-full flex-col gap-4">
                     <div className="flex gap-4">
                       <Avatar className="h-10 w-10">

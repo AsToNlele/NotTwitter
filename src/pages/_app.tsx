@@ -18,7 +18,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <main className={`${inter.variable} font-sans`}>
+        <style jsx global>{`
+          :root {
+            --font-inter: ${inter.variable};
+          }
+        `}</style>
+        <main className={`font-sans`}>
           <Component {...pageProps} />
         </main>
       </ThemeProvider>
