@@ -1,4 +1,5 @@
-import { Home as HomeIcon } from "lucide-react";
+import { Home as HomeIcon, User2 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Logo } from "./logo";
 import {
   DropdownMenu,
@@ -11,6 +12,21 @@ import {
 import { MyAvatar } from "~/components/my-avatar";
 import { UserTag } from "./user-tag";
 
+const SidebarItem = ({
+  icon: Icon,
+  title,
+}: {
+  icon: LucideIcon;
+  title: string;
+}) => (
+  <div className="mx-2 flex flex-1 cursor-pointer items-center justify-center gap-4 rounded-md p-4 hover:bg-accent lg:mx-0 lg:mr-2 lg:justify-normal">
+    <Icon size={30} />
+    <span className="hidden text-xl font-semibold text-primary lg:block">
+      {title}
+    </span>
+  </div>
+);
+
 export const Sidebar = () => (
   <div className="hidden shrink basis-auto flex-col items-end xs:flex md:shrink-0 md:grow">
     <div className="flex h-screen w-[100px] flex-col justify-between py-2 lg:w-[200px]">
@@ -18,13 +34,9 @@ export const Sidebar = () => (
         <div className="flex h-8 justify-center px-4 py-2 lg:justify-normal">
           <Logo />
         </div>
-        <div className="items-left flex">
-          <div className="mx-2 flex flex-1 cursor-pointer items-center justify-center gap-4 rounded-md p-4 hover:bg-accent lg:mx-0 lg:mr-2 lg:justify-normal">
-            <HomeIcon size={30} />
-            <span className="hidden text-xl font-semibold text-primary lg:block">
-              Home
-            </span>
-          </div>
+        <div className="items-left flex flex-col gap-2">
+          <SidebarItem icon={HomeIcon} title="Home" />
+          <SidebarItem icon={User2} title="Profile" />
         </div>
       </div>
       <div className="flex">
