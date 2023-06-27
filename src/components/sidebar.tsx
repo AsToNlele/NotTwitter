@@ -28,7 +28,7 @@ const SidebarItem = ({
 );
 
 export const Sidebar = () => (
-  <div className="hidden shrink basis-auto flex-col items-end xs:flex md:shrink-0 md:grow">
+  <div className="sticky top-0 hidden h-screen shrink basis-auto flex-col items-end xs:flex md:shrink-0 md:grow">
     <div className="flex h-screen w-[100px] flex-col justify-between py-2 lg:w-[200px]">
       <div className="flex flex-col gap-5">
         <div className="flex h-8 justify-center px-4 py-2 lg:justify-normal">

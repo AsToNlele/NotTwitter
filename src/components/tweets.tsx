@@ -10,6 +10,16 @@ export const Tweets = () => (
   <>
     <Tweet />
     <Tweet />
+    <Tweet />
+    <Tweet />
+    <Tweet />
+    <Tweet />
+    <Tweet />
+    <Tweet />
+    <Tweet />
+    <Tweet />
+    <Tweet />
+    <Tweet />
   </>
 );
 
