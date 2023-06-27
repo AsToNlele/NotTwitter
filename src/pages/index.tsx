@@ -45,16 +45,18 @@ export default function Home() {
                     />
                   </Twitter>
                 </div>
-                <div className="items-left flex items-center justify-center gap-4 p-4 lg:justify-normal">
-                  <HomeIcon size={30} />
-                  <span className="hidden text-xl font-semibold text-primary lg:block">
-                    Home
-                  </span>
+                <div className="items-left flex">
+                  <div className="mx-2 flex flex-1 cursor-pointer items-center justify-center gap-4 rounded-md p-4 hover:bg-accent lg:mx-0 lg:mr-2 lg:justify-normal">
+                    <HomeIcon size={30} />
+                    <span className="hidden text-xl font-semibold text-primary lg:block">
+                      Home
+                    </span>
+                  </div>
                 </div>
               </div>
               <div className="flex">
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="flex w-full justify-center gap-3 rounded-md px-4 py-2 hover:bg-accent lg:mr-2 lg:justify-normal">
+                  <DropdownMenuTrigger className="mx-2 flex w-full justify-center gap-3 rounded-md px-4 py-2 hover:bg-accent lg:mx-0 lg:mr-2 lg:justify-normal">
                     <div className="flex justify-center gap-3 lg:justify-normal">
                       <Avatar className="h-10 w-10">
                         <AvatarImage
