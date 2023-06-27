@@ -174,7 +174,7 @@ export default function Home() {
                       />
                     </div>
                     <div className="flex justify-end">
-                      <Button>Tweet</Button>
+                      <Button className="font-semibold">Tweet</Button>
                     </div>
                   </div>
                 </div>
