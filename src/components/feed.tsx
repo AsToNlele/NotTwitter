@@ -1,5 +1,6 @@
 import { FeedTop } from "./feed-top";
 import { Tweeter } from "./tweeter";
+import { Tweets } from "./tweets";
 
 export const Feed = () => {
   return (
@@ -8,6 +9,7 @@ export const Feed = () => {
         <div className="h-screen w-full break-all border-x md:w-[650px]">
           <FeedTop />
           <Tweeter />
+          <Tweets />
         </div>
       </div>
     </div>
