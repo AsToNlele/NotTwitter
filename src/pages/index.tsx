@@ -3,6 +3,7 @@ import {
   DropdownMenuContent,
 } from "@radix-ui/react-dropdown-menu";
 import { Home as HomeIcon, Twitter, X } from "lucide-react";
+import { useTheme } from "next-themes";
 import Head from "next/head";
 import { type FocusEvent, useCallback, useState } from "react";
 import sanitizeHtml from "sanitize-html";
@@ -30,6 +31,8 @@ export default function Home() {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
     setContent(sanitizeHtml(evt.target.innerHTML));
   }, []);
+
+  const { resolvedTheme } = useTheme();
   return (
     <>
       <Head>
@@ -44,7 +47,7 @@ export default function Home() {
                   <Twitter
                     size={30}
                     strokeWidth={1}
-                    fill="white"
+                    fill={resolvedTheme === "dark" ? "white" : "black"}
                     className="relative"
                   >
                     <X
@@ -140,7 +143,7 @@ export default function Home() {
                     <Twitter
                       size={30}
                       strokeWidth={1}
-                      fill="white"
+                      fill={resolvedTheme === "dark" ? "white" : "black"}
                       className="relative"
                     >
                       <X
