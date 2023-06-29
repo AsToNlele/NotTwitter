@@ -4,14 +4,14 @@ import sanitizeHtml from "sanitize-html";
 import { MyAvatar } from "./my-avatar";
 import { Button } from "./ui/button";
 
-export const Tweeter = () => {
+export const Tweeter = ({ mobile = false }: { mobile?: boolean }) => {
   const [content, setContent] = useState<string>("");
 
   const onContentBlur = useCallback((evt: FocusEvent<HTMLInputElement>) => {
     setContent(sanitizeHtml(evt.target.innerHTML));
   }, []);
   return (
-    <div className="hidden border-b p-4 xs:block">
+    <div className={`${mobile ? "pt-8" : "hidden border-b p-4 xs:block"}`}>
       <div className="flex w-full flex-col gap-4">
         <div className="flex gap-4">
           <MyAvatar />
