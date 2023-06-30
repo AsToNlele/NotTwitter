@@ -4,7 +4,13 @@ import sanitizeHtml from "sanitize-html";
 import { MyAvatar } from "./my-avatar";
 import { Button } from "./ui/button";
 
-export const Tweeter = ({ mobile = false }: { mobile?: boolean }) => {
+export const Tweeter = ({
+  mobile = false,
+  onTweet,
+}: {
+  mobile?: boolean;
+  onTweet?: () => void;
+}) => {
   const [content, setContent] = useState<string>("");
 
   const onContentBlur = useCallback((evt: FocusEvent<HTMLInputElement>) => {
@@ -25,7 +31,12 @@ export const Tweeter = ({ mobile = false }: { mobile?: boolean }) => {
           />
         </div>
         <div className="flex justify-end">
-          <Button className="font-semibold">Tweet</Button>
+          <Button
+            className="font-semibold"
+            onClick={() => onTweet && onTweet()}
+          >
+            Tweet
+          </Button>
         </div>
       </div>
     </div>
