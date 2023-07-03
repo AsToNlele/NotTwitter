@@ -59,9 +59,9 @@ export const Sidebar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger className="mx-2 flex w-full justify-center gap-3 rounded-md px-4 py-2 hover:bg-accent lg:mx-0 lg:mr-2 lg:justify-normal">
                 <div className="flex justify-center gap-3 lg:justify-normal">
-                  <MyAvatar image={data && data.user.image} />
+                  <MyAvatar image={data?.user.image} />
                   <div className="hidden lg:block">
-                    <UserTag user={data && data.user} />
+                    <UserTag user={data?.user} />
                   </div>
                 </div>
               </DropdownMenuTrigger>

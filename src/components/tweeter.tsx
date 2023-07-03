@@ -4,6 +4,7 @@ import sanitizeHtml from "sanitize-html";
 import { MyAvatar } from "./my-avatar";
 import { Button } from "./ui/button";
 import useTweeterDialog from "~/hooks/useTweeterDialog";
+import { useSession } from "next-auth/react";
 
 interface TweeterProps {
   isModal?: boolean;
@@ -12,6 +13,7 @@ interface TweeterProps {
 export const Tweeter = (props: TweeterProps) => {
   const [content, setContent] = useState<string>("");
   const setOpen = useTweeterDialog((state) => state.setOpen);
+  const { data } = useSession();
 
   const onContentBlur = useCallback((evt: FocusEvent<HTMLInputElement>) => {
     setContent(sanitizeHtml(evt.target.innerHTML));
@@ -22,7 +24,7 @@ export const Tweeter = (props: TweeterProps) => {
     >
       <div className="flex w-full flex-col gap-4">
         <div className="flex gap-4">
-          <MyAvatar />
+          <MyAvatar image={data?.user.image} />
           <div
             className="block max-h-[80vh] w-full resize-none overflow-y-auto pt-1 text-xl outline-none focus:border-transparent focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
             role="textbox"
