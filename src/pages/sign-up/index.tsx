@@ -1,6 +1,3 @@
-import Image from "next/image";
-import { Command } from "lucide-react";
-
 import { UserAuthForm } from "~/components/sign-up-form";
 
 export default function SignUp() {

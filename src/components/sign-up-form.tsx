@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Button } from "./ui/button";
-import { Github } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { signIn } from "next-auth/react";
 

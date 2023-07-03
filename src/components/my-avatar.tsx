@@ -1,4 +1,3 @@
-import { User } from "@prisma/client";
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
 
 export const MyAvatar = ({ image }: { image?: string | null }) => (
