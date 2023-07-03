@@ -14,6 +14,7 @@ import { UserTag } from "./user-tag";
 import { signOut, useSession } from "next-auth/react";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import useTweeterDialog from "~/hooks/useTweeterDialog";
 
 const SidebarItem = ({
   icon: Icon,
@@ -32,7 +33,7 @@ const SidebarItem = ({
 
 export const Sidebar = () => {
   const { data, status } = useSession();
-  console.log(data);
+  const setOpen = useTweeterDialog((state) => state.setOpen);
   return (
     <div className="sticky top-0 hidden h-screen shrink basis-auto flex-col items-end xs:flex md:shrink-0 md:grow">
       <div className="flex h-screen w-[100px] flex-col justify-between py-2 lg:w-[200px]">
@@ -43,6 +44,12 @@ export const Sidebar = () => {
           <div className="items-left flex flex-col gap-2">
             <SidebarItem icon={HomeIcon} title="Home" />
             <SidebarItem icon={User2} title="Profile" />
+            <Button
+              className="mr-2 font-semibold"
+              onClick={() => setOpen(true)}
+            >
+              Tweet
+            </Button>
           </div>
         </div>
         <div className="flex items-center justify-center">
