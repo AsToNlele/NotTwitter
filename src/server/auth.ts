@@ -1,31 +1,9 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import type { User } from "@prisma/client";
 import { type GetServerSidePropsContext } from "next";
-import {
-  getServerSession,
-  type NextAuthOptions,
-  type DefaultSession,
-} from "next-auth";
+import { getServerSession, type NextAuthOptions } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
-
-/**
- * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
- * object and keep type safety.
- *
- * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
- */
-declare module "next-auth" {
-  interface Session extends DefaultSession {
-    user: {
-      id: string;
-      // ...other properties
-      // role: UserRole;
-    } & DefaultSession["user"] &
-      User;
-  }
-}
 
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
@@ -35,11 +13,35 @@ declare module "next-auth" {
 export const authOptions: NextAuthOptions = {
   callbacks: {
     session: async ({ session, user }) => {
-      const myUser = await prisma.user.findFirst({ where: { id: user.id } });
+      let myUser = await prisma.user.findFirst({ where: { id: user.id } });
+
+      if (!myUser) {
+        return session;
+      }
+
+      if (!myUser.setupComplete) {
+        let handle = myUser.name!;
+        let handleExists;
+        do {
+          handleExists = await prisma.user.findFirst({
+            where: { handle: handle, id: { not: user.id } },
+          });
+          if (handleExists)
+            handle = `${handle}${Math.floor(Math.random() * 1000)}`;
+        } while (handleExists);
+
+        myUser = await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            handle,
+            setupComplete: true,
+          },
+        });
+      }
+
       return {
         ...session,
         user: {
-          id: user.id,
           ...myUser,
         },
       };
