@@ -31,7 +31,7 @@ const Tweet = ({ tweet }: { tweet: TweetWithAuthor }) => (
           </span>
         </div>
         <div className="flex">
-          <span>{tweet.text}</span>
+          <span className="whitespace-pre-wrap">{tweet.text}</span>
         </div>
         <div className="mt-1 flex gap-6">
           <div className="group flex cursor-pointer gap-2 py-1 pr-2 text-slate-500 hover:text-blue-500">
