@@ -3,7 +3,10 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const tweetRouter = createTRPCRouter({
   getAll: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.tweet.findMany({ include: { author: true } });
+    return ctx.prisma.tweet.findMany({
+      orderBy: { createdAt: "desc" },
+      include: { author: true },
+    });
   }),
   create: protectedProcedure
     .input(z.object({ text: z.string() }))
