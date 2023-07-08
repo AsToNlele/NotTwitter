@@ -3,40 +3,35 @@ import { MyAvatar } from "./my-avatar";
 import { UserTag } from "./user-tag";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { api } from "~/utils/api";
+import type { TweetWithAuthor } from "prisma/customTypes";
 
 dayjs.extend(relativeTime);
 
-export const Tweets = () => (
-  <>
-    <Tweet />
-    <Tweet />
-    <Tweet />
-    <Tweet />
-    <Tweet />
-    <Tweet />
-    <Tweet />
-    <Tweet />
-    <Tweet />
-    <Tweet />
-    <Tweet />
-    <Tweet />
-  </>
-);
+export const Tweets = () => {
+  const tweets = api.tweet.getAll.useQuery();
+  return (
+    <>
+      {tweets.data?.map((tweet) => <Tweet key={tweet.id} tweet={tweet} />) ||
+        null}
+    </>
+  );
+};
 
-const Tweet = () => (
+const Tweet = ({ tweet }: { tweet: TweetWithAuthor }) => (
   <div className="flex gap-2 border-b p-4">
-    <MyAvatar />
+    <MyAvatar image={tweet.author.image} />
     <div className="flex">
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-1">
-          <UserTag horizontal />
+          <UserTag user={tweet.author} horizontal />
           <span className="text-slate-500">·</span>
           <span className="text-sm text-slate-500">
-            {dayjs("2023-06-25").fromNow(true)}
+            {dayjs(tweet.createdAt).fromNow(true)}
           </span>
         </div>
         <div className="flex">
-          <span>Hello there!</span>
+          <span>{tweet.text}</span>
         </div>
         <div className="mt-1 flex gap-6">
           <div className="group flex cursor-pointer gap-2 py-1 pr-2 text-slate-500 hover:text-blue-500">
