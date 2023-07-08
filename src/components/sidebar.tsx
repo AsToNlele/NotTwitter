@@ -45,7 +45,7 @@ export const Sidebar = () => {
             <SidebarItem icon={HomeIcon} title="Home" />
             <SidebarItem icon={User2} title="Profile" />
             <Button
-              className="mr-2 font-semibold"
+              className="mx-2 font-semibold lg:mx-0 lg:mr-2"
               onClick={() => setOpen(true)}
             >
               Tweet
