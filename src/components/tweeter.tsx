@@ -53,6 +53,7 @@ export const Tweeter = (props: TweeterProps) => {
             onClick={() => {
               setOpen(false);
               mutate({ text: content });
+              setContent("");
             }}
           >
             {isLoading ? <Loader2 className="animate-spin" /> : "Tweet"}
