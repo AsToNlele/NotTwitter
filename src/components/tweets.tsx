@@ -1,4 +1,4 @@
-import { Heart, MessageCircle, Repeat2 } from "lucide-react";
+import { Heart, Loader2, MessageCircle, Repeat2 } from "lucide-react";
 import { MyAvatar } from "./my-avatar";
 import { UserTag } from "./user-tag";
 import dayjs from "dayjs";
@@ -9,11 +9,16 @@ import type { TweetWithAuthor } from "prisma/customTypes";
 dayjs.extend(relativeTime);
 
 export const Tweets = () => {
-  const tweets = api.tweet.getAll.useQuery();
+  const { data, isLoading } = api.tweet.getAll.useQuery();
   return (
     <>
-      {tweets.data?.map((tweet) => <Tweet key={tweet.id} tweet={tweet} />) ||
-        null}
+      {isLoading ? (
+        <div className="mt-4 flex grow items-center justify-center">
+          <Loader2 className="animate-spin" />
+        </div>
+      ) : (
+        data?.map((tweet) => <Tweet key={tweet.id} tweet={tweet} />) || null
+      )}
     </>
   );
 };

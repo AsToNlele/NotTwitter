@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import useTweeterDialog from "~/hooks/useTweeterDialog";
 import { useSession } from "next-auth/react";
 import useCreateTweet from "~/hooks/useCreateTweet";
+import { Loader2 } from "lucide-react";
 
 interface TweeterProps {
   isModal?: boolean;
@@ -15,7 +16,7 @@ export const Tweeter = (props: TweeterProps) => {
   const [content, setContent] = useState<string>("");
   const setOpen = useTweeterDialog((state) => state.setOpen);
   const { data } = useSession();
-  const createTweet = useCreateTweet();
+  const { mutate, isLoading } = useCreateTweet();
 
   const onContentBlur = useCallback((evt: FocusEvent<HTMLInputElement>) => {
     setContent(
@@ -51,10 +52,10 @@ export const Tweeter = (props: TweeterProps) => {
             className="font-semibold"
             onClick={() => {
               setOpen(false);
-              createTweet.mutate({ text: content });
+              mutate({ text: content });
             }}
           >
-            Tweet
+            {isLoading ? <Loader2 className="animate-spin" /> : "Tweet"}
           </Button>
         </div>
       </div>
