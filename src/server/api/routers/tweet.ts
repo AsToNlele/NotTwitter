@@ -5,7 +5,7 @@ export const tweetRouter = createTRPCRouter({
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.tweet.findMany({
       orderBy: { createdAt: "desc" },
-      include: { author: true },
+      include: { author: true, _count: { select: { likes: true } } },
     });
   }),
   create: protectedProcedure

@@ -4,7 +4,7 @@ import { UserTag } from "./user-tag";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { api } from "~/utils/api";
-import type { TweetWithAuthor } from "prisma/customTypes";
+import type { TweetWithAuthorAndLikes } from "prisma/customTypes";
 
 dayjs.extend(relativeTime);
 
@@ -23,7 +23,7 @@ export const Tweets = () => {
   );
 };
 
-const Tweet = ({ tweet }: { tweet: TweetWithAuthor }) => (
+const Tweet = ({ tweet }: { tweet: TweetWithAuthorAndLikes }) => (
   <div className="flex gap-2 border-b p-4">
     <MyAvatar image={tweet.author.image} />
     <div className="flex">
@@ -49,7 +49,7 @@ const Tweet = ({ tweet }: { tweet: TweetWithAuthor }) => (
           </div>
           <div className="group flex cursor-pointer gap-2 py-1 pr-2 text-slate-500 hover:text-red-500">
             <Heart size={18} />
-            <span className="text-sm">105</span>
+            <span className="text-sm">{tweet._count.likes}</span>
           </div>
         </div>
       </div>
