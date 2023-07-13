@@ -5,7 +5,13 @@ export const tweetRouter = createTRPCRouter({
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.tweet.findMany({
       orderBy: { createdAt: "desc" },
-      include: { author: true, _count: { select: { likes: true } } },
+      include: {
+        author: true,
+        // Check if the current user has liked the tweet
+        likes: { where: { userId: { equals: ctx.session.user.id } } },
+        // Like count
+        _count: { select: { likes: true } },
+      },
     });
   }),
   create: protectedProcedure

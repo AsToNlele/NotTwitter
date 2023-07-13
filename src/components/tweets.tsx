@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { api } from "~/utils/api";
 import type { TweetWithAuthorAndLikes } from "prisma/customTypes";
+import { useLikeTweet, useUnlikeTweet } from "~/hooks/useLikeTweet";
 
 dayjs.extend(relativeTime);
 
@@ -23,36 +24,58 @@ export const Tweets = () => {
   );
 };
 
-const Tweet = ({ tweet }: { tweet: TweetWithAuthorAndLikes }) => (
-  <div className="flex gap-2 border-b p-4">
-    <MyAvatar image={tweet.author.image} />
-    <div className="flex">
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-1">
-          <UserTag user={tweet.author} horizontal />
-          <span className="text-slate-500">·</span>
-          <span className="text-sm text-slate-500">
-            {dayjs(tweet.createdAt).fromNow(true)}
-          </span>
-        </div>
-        <div className="flex">
-          <span className="whitespace-pre-wrap">{tweet.text}</span>
-        </div>
-        <div className="mt-1 flex gap-6">
-          <div className="group flex cursor-pointer gap-2 py-1 pr-2 text-slate-500 hover:text-blue-500">
-            <MessageCircle size={18} />
-            <span className="text-sm">25</span>
+const Tweet = ({ tweet }: { tweet: TweetWithAuthorAndLikes }) => {
+  const hasLiked = tweet?.likes && tweet.likes.length > 0;
+  const like = useLikeTweet();
+  const unlike = useUnlikeTweet();
+
+  const likeUnlike = () => {
+    if (hasLiked) {
+      unlike.mutate({ tweetId: tweet.id });
+    } else {
+      like.mutate({ tweetId: tweet.id });
+    }
+  };
+
+  return (
+    <div className="flex gap-2 border-b p-4">
+      <MyAvatar image={tweet.author.image} />
+      <div className="flex">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-1">
+            <UserTag user={tweet.author} horizontal />
+            <span className="text-slate-500">·</span>
+            <span className="text-sm text-slate-500">
+              {dayjs(tweet.createdAt).fromNow(true)}
+            </span>
           </div>
-          <div className="group flex cursor-pointer gap-2 py-1 pr-2 text-slate-500 hover:text-green-500">
-            <Repeat2 size={18} />
-            <span className="text-sm">4</span>
+          <div className="flex">
+            <span className="whitespace-pre-wrap">{tweet.text}</span>
           </div>
-          <div className="group flex cursor-pointer gap-2 py-1 pr-2 text-slate-500 hover:text-red-500">
-            <Heart size={18} />
-            <span className="text-sm">{tweet._count.likes}</span>
+          <div className="mt-1 flex gap-6">
+            <div className="group flex cursor-pointer gap-2 py-1 pr-2 text-slate-500 hover:text-blue-500">
+              <MessageCircle size={18} />
+              <span className="text-sm">25</span>
+            </div>
+            <div className="group flex cursor-pointer gap-2 py-1 pr-2 text-slate-500 hover:text-green-500">
+              <Repeat2 size={18} />
+              <span className="text-sm">4</span>
+            </div>
+            <div
+              className={`group flex cursor-pointer gap-2 py-1 pr-2 hover:text-red-500 ${
+                hasLiked ? "text-red-500" : "text-slate-500"
+              }`}
+            >
+              <Heart
+                size={18}
+                fill={hasLiked ? "red" : ""}
+                onClick={() => likeUnlike()}
+              />
+              <span className="text-sm">{tweet._count.likes}</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};

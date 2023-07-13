@@ -5,8 +5,10 @@ const tweetWithAuthor = Prisma.validator<Prisma.TweetArgs>()({
 });
 
 const tweetWithAuthorAndLikes = Prisma.validator<Prisma.TweetArgs>()({
-  include: { author: true, _count: { select: { likes: true } } },
+  include: { author: true, likes: true, _count: { select: { likes: true } } },
 });
 
 export type TweetWithAuthor = Prisma.TweetGetPayload<typeof tweetWithAuthor>;
-export type TweetWithAuthorAndLikes = Prisma.TweetGetPayload<typeof tweetWithAuthorAndLikes>;
+export type TweetWithAuthorAndLikes = Prisma.TweetGetPayload<
+  typeof tweetWithAuthorAndLikes
+>;
