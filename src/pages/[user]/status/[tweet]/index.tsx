@@ -1,4 +1,5 @@
 import { ArrowLeft } from "lucide-react";
+import type { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -7,6 +8,7 @@ import { FeedTopMobile } from "~/components/feed-top-mobile";
 import { Sidebar } from "~/components/sidebar";
 import { TweeterDialog } from "~/components/tweeter-dialog";
 import { Tweet } from "~/components/tweets";
+import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
 
 const TweetPage = () => {
@@ -59,3 +61,17 @@ const TweetPage = () => {
 };
 
 export default TweetPage;
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getServerAuthSession(context);
+  if (!session || (session && !session.user)) {
+    return {
+      redirect: {
+        destination: "/sign-up",
+      },
+    };
+  }
+  return { props: {} };
+};
