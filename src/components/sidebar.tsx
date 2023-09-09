@@ -42,7 +42,9 @@ export const Sidebar = () => {
             <Logo />
           </div>
           <div className="items-left flex flex-col gap-2">
-            <SidebarItem icon={HomeIcon} title="Home" />
+            <Link href="/">
+              <SidebarItem icon={HomeIcon} title="Home" />
+            </Link>
             <SidebarItem icon={User2} title="Profile" />
             <Button
               className="mx-2 font-semibold lg:mx-0 lg:mr-2"

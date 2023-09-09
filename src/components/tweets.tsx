@@ -6,6 +6,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { api } from "~/utils/api";
 import type { TweetWithAuthorAndLikes } from "prisma/customTypes";
 import { useLikeTweet, useUnlikeTweet } from "~/hooks/useLikeTweet";
+import { useRouter } from "next/router";
 
 dayjs.extend(relativeTime);
 
@@ -18,13 +19,20 @@ export const Tweets = () => {
           <Loader2 className="animate-spin" />
         </div>
       ) : (
-        data?.map((tweet) => <Tweet key={tweet.id} tweet={tweet} />) || null
+        data?.map((tweet) => <Tweet key={tweet.id} tweet={tweet} withLink />) ||
+        null
       )}
     </>
   );
 };
 
-const Tweet = ({ tweet }: { tweet: TweetWithAuthorAndLikes }) => {
+export const Tweet = ({
+  tweet,
+  withLink,
+}: {
+  tweet: TweetWithAuthorAndLikes;
+  withLink?: boolean;
+}) => {
   const hasLiked = tweet?.likes && tweet.likes.length > 0;
   const like = useLikeTweet();
   const unlike = useUnlikeTweet();
@@ -37,10 +45,20 @@ const Tweet = ({ tweet }: { tweet: TweetWithAuthorAndLikes }) => {
     }
   };
 
+  const router = useRouter();
+
   return (
-    <div className="flex gap-2 border-b p-4">
+    <div
+      className="flex gap-2 border-b p-4 hover:cursor-pointer"
+      id={tweet.id}
+      onClick={(e) => {
+        if ((e.target as Element).id === tweet.id && withLink) {
+          router.push(`/${tweet.author.handle!}/status/${tweet.id}`);
+        }
+      }}
+    >
       <MyAvatar image={tweet.author.image} />
-      <div className="flex">
+      <div className="flex hover:cursor-default">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-1">
             <UserTag user={tweet.author} horizontal />

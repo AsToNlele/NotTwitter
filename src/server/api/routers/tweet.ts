@@ -28,4 +28,18 @@ export const tweetRouter = createTRPCRouter({
         },
       });
     }),
+  getOne: protectedProcedure
+    .input(z.object({ tweet: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.tweet.findFirst({
+        where: { id: input.tweet },
+        include: {
+          author: true,
+          // Check if the current user has liked the tweet
+          likes: { where: { userId: { equals: ctx.session.user.id } } },
+          // Like count
+          _count: { select: { likes: true } },
+        },
+      });
+    }),
 });
