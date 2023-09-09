@@ -1,12 +1,12 @@
-import { Heart, Loader2, MessageCircle, Repeat2 } from "lucide-react";
-import { MyAvatar } from "./my-avatar";
-import { UserTag } from "./user-tag";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { api } from "~/utils/api";
-import type { TweetWithAuthorAndLikes } from "prisma/customTypes";
-import { useLikeTweet, useUnlikeTweet } from "~/hooks/useLikeTweet";
+import { Heart, Loader2, MessageCircle, Repeat2 } from "lucide-react";
 import { useRouter } from "next/router";
+import type { TweetWithAuthorAndLikes } from "prisma/customTypes";
+import { useLikeTweet } from "~/hooks/useLikeTweet";
+import { api } from "~/utils/api";
+import { MyAvatar } from "./my-avatar";
+import { UserTag } from "./user-tag";
 
 dayjs.extend(relativeTime);
 
@@ -34,16 +34,7 @@ export const Tweet = ({
   withLink?: boolean;
 }) => {
   const hasLiked = tweet?.likes && tweet.likes.length > 0;
-  const like = useLikeTweet();
-  const unlike = useUnlikeTweet();
-
-  const likeUnlike = () => {
-    if (hasLiked) {
-      unlike.mutate({ tweetId: tweet.id });
-    } else {
-      like.mutate({ tweetId: tweet.id });
-    }
-  };
+  const likeTweet = useLikeTweet();
 
   const router = useRouter();
 
@@ -87,7 +78,7 @@ export const Tweet = ({
               <Heart
                 size={18}
                 fill={hasLiked ? "red" : ""}
-                onClick={() => likeUnlike()}
+                onClick={() => likeTweet.mutate({ tweetId: tweet.id })}
               />
               <span className="text-sm">{tweet._count.likes}</span>
             </div>
