@@ -41,7 +41,13 @@ const TweetPage = () => {
                   <FeedTopMobile />
                   <div className="hidden xs:block">
                     <span className="flex items-center gap-6 text-xl font-semibold">
-                      <Link href="/">
+                      <Link
+                        href={
+                          data?.parentTweetId
+                            ? `/${data.author.handle}/status/${data.parentTweetId}`
+                            : "/"
+                        }
+                      >
                         <ArrowLeft />
                       </Link>{" "}
                       Tweet
@@ -63,7 +69,7 @@ const TweetPage = () => {
 export default TweetPage;
 
 export const getServerSideProps = async (
-  context: GetServerSidePropsContext
+  context: GetServerSidePropsContext,
 ) => {
   const session = await getServerAuthSession(context);
   if (!session || (session && !session.user)) {
