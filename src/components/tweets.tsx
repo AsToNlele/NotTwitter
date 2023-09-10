@@ -17,6 +17,7 @@ import { useLikeTweet } from "~/hooks/useLikeTweet";
 import { api } from "~/utils/api";
 import { MyAvatar } from "./my-avatar";
 import { UserTag } from "./user-tag";
+import { Tweeter } from "~/components/tweeter";
 
 dayjs.extend(relativeTime);
 
@@ -55,66 +56,84 @@ const tweetDate = (date: Date) => {
 
 export const Tweet = ({ tweet, isOnFeed = false }: TweetProps) => {
   const router = useRouter();
+  const { data: commentData } = api.tweet.getComments.useQuery(
+    {
+      tweet: tweet.id,
+    },
+    {
+      enabled: !isOnFeed,
+    },
+  );
+  console.log("DATA", commentData);
 
   return (
-    <div
-      className="flex cursor-pointer flex-col gap-4 border-b p-4"
-      id={tweet.id}
-      onClick={(e) => {
-        if ((e.target as Element).id === tweet.id && isOnFeed) {
-          router.push(`/${tweet.author.handle!}/status/${tweet.id}`);
-        }
-      }}
-    >
-      <div className="flex gap-2">
-        <MyAvatar image={tweet.author.image} />
-        <div className="flex flex-1 flex-col gap-0 hover:cursor-default">
-          <div className="flex flex-col">
-            <div className="flex items-center gap-1" id={tweet.id}>
-              <UserTag user={tweet.author} horizontal={isOnFeed} />
-              {isOnFeed && (
-                <>
-                  <span className="text-slate-500">·</span>
-                  <span className="text-sm text-slate-500">
-                    {tweetFeedDate(tweet.createdAt)}
-                  </span>
-                </>
-              )}
-              <div id={tweet.id} className="flex-1 hover:cursor-pointer">
-                &shy;
+    <>
+      <div
+        className="flex cursor-pointer flex-col gap-4 border-b p-4"
+        id={tweet.id}
+        onClick={(e) => {
+          if ((e.target as Element).id === tweet.id && isOnFeed) {
+            router.push(`/${tweet.author.handle!}/status/${tweet.id}`);
+          }
+        }}
+      >
+        <div className="flex gap-2">
+          <MyAvatar image={tweet.author.image} />
+          <div className="flex flex-1 flex-col gap-0 hover:cursor-default">
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1" id={tweet.id}>
+                <UserTag user={tweet.author} horizontal={isOnFeed} />
+                {isOnFeed && (
+                  <>
+                    <span className="text-slate-500">·</span>
+                    <span className="text-sm text-slate-500">
+                      {tweetFeedDate(tweet.createdAt)}
+                    </span>
+                  </>
+                )}
+                <div id={tweet.id} className="flex-1 hover:cursor-pointer">
+                  &shy;
+                </div>
               </div>
             </div>
+            {isOnFeed && (
+              <>
+                <div className="flex hover:cursor-pointer" id={tweet.id}>
+                  <span className="whitespace-pre-wrap">{tweet.text}</span>
+                </div>
+                <div
+                  className="mt-2 flex justify-between hover:cursor-pointer"
+                  id={tweet.id}
+                >
+                  <TweetActionsAndStatuses tweet={tweet} isOnFeed />
+                </div>
+              </>
+            )}
           </div>
-          {isOnFeed && (
-            <>
-              <div className="flex hover:cursor-pointer" id={tweet.id}>
-                <span className="whitespace-pre-wrap">{tweet.text}</span>
-              </div>
-              <div
-                className="mt-2 flex justify-between hover:cursor-pointer"
-                id={tweet.id}
-              >
-                <TweetActionsAndStatuses tweet={tweet} isOnFeed />
-              </div>
-            </>
-          )}
         </div>
+        {!isOnFeed && (
+          <>
+            <div className="flex">
+              <span className="whitespace-pre-wrap">{tweet.text}</span>
+            </div>
+            <div className="flex">
+              <span className="text-base text-slate-500">
+                {tweetDate(tweet.createdAt)}
+              </span>
+            </div>
+            <Separator />
+            <TweetActionsAndStatuses tweet={tweet} />
+            <Separator />
+            <Tweeter isReply replyTweetId={tweet.id} />
+          </>
+        )}
       </div>
-      {!isOnFeed && (
-        <>
-          <div className="flex">
-            <span className="whitespace-pre-wrap">{tweet.text}</span>
-          </div>
-          <div className="flex">
-            <span className="text-base text-slate-500">
-              {tweetDate(tweet.createdAt)}
-            </span>
-          </div>
-          <Separator />
-          <TweetActionsAndStatuses tweet={tweet} />
-        </>
-      )}
-    </div>
+      {!isOnFeed &&
+        commentData?.map((comment) => (
+          <Tweet key={tweet.id} tweet={comment} isOnFeed />
+        ))}
+      <div></div>
+    </>
   );
 };
 
@@ -169,6 +188,11 @@ interface TweetStatusesProps {
 
 const TweetStatuses = ({ tweet }: TweetStatusesProps) => {
   const statuses: TweetStatusProps[] = [
+    {
+      type: TweetStatusTypes.Reply,
+      title: "Replies",
+      value: tweet._count.replies,
+    },
     {
       type: TweetStatusTypes.Repost,
       title: "Reposts",
@@ -251,11 +275,12 @@ interface TweetActionsProps {
 
 const TweetActions = ({ tweet, isOnFeed = false }: TweetActionsProps) => {
   const likeTweet = useLikeTweet();
+
   const tweetActions: TweetActionProps[] = [
     {
       type: TweetActionTypes.Comment,
       showCount: isOnFeed,
-      count: 12,
+      count: tweet._count.replies,
       Icon: MessageCircle,
       color: "text-blue-500",
     },
@@ -294,7 +319,7 @@ const TweetActions = ({ tweet, isOnFeed = false }: TweetActionsProps) => {
     <>
       {tweetActions.map((action) => (
         <div
-          key={action.type}
+          key={`${action.type}${tweet.id}`}
           className={`${
             isOnFeed
               ? "flex justify-between hover:cursor-pointer"

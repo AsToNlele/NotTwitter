@@ -2,14 +2,17 @@ import type { Like } from "@prisma/client";
 import type { TweetWithAuthorAndLikes } from "prisma/customTypes";
 
 const optimisticallyChangeLike = (
-  oldTweet: TweetWithAuthorAndLikes
+  oldTweet: TweetWithAuthorAndLikes,
 ): TweetWithAuthorAndLikes => {
   if (oldTweet?.likes.length > 0) {
     const newLikes: Like[] = [];
     return {
       ...oldTweet,
       likes: newLikes,
-      _count: { likes: oldTweet._count.likes - 1 },
+      _count: {
+        likes: oldTweet._count.likes - 1,
+        replies: oldTweet._count.replies,
+      },
     };
   } else {
     const newLikes: Like[] = [
@@ -23,7 +26,10 @@ const optimisticallyChangeLike = (
     return {
       ...oldTweet,
       likes: newLikes,
-      _count: { likes: oldTweet._count.likes + 1 },
+      _count: {
+        likes: oldTweet._count.likes + 1,
+        replies: oldTweet._count.replies,
+      },
     };
   }
 };

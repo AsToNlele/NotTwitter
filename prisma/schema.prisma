@@ -66,13 +66,16 @@ model VerificationToken {
 }
 
 model Tweet {
-    id        String   @id @default(cuid())
-    text      String
-    author    User     @relation(fields: [authorId], references: [id])
-    authorId  String
-    createdAt DateTime @default(now())
-    likes     Like[]
+    id            String   @id @default(cuid())
+    text          String
+    author        User     @relation(fields: [authorId], references: [id])
+    authorId      String
+    createdAt     DateTime @default(now())
+    likes         Like[]
     // updatedAt DateTime @updatedAt Hehe, not yet
+    parentTweetId String?
+    parentTweet   Tweet?   @relation("ParentTweet", fields: [parentTweetId], references: [id])
+    replies       Tweet[]  @relation("ParentTweet")
 }
 
 model Like {
