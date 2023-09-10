@@ -1,8 +1,18 @@
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { Heart, Loader2, MessageCircle, Repeat2 } from "lucide-react";
+import {
+  BookmarkIcon,
+  BoxIcon,
+  Heart,
+  Loader2,
+  MessageCircle,
+  Repeat2,
+  ShareIcon,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import type { TweetWithAuthorAndLikes } from "prisma/customTypes";
+import { Separator } from "~/components/ui/separator";
 import { useLikeTweet } from "~/hooks/useLikeTweet";
 import { api } from "~/utils/api";
 import { MyAvatar } from "./my-avatar";
@@ -19,72 +29,281 @@ export const Tweets = () => {
           <Loader2 className="animate-spin" />
         </div>
       ) : (
-        data?.map((tweet) => <Tweet key={tweet.id} tweet={tweet} withLink />) ||
+        data?.map((tweet) => <Tweet key={tweet.id} tweet={tweet} isOnFeed />) ||
         null
       )}
     </>
   );
 };
 
-export const Tweet = ({
-  tweet,
-  withLink,
-}: {
+interface TweetProps {
   tweet: TweetWithAuthorAndLikes;
-  withLink?: boolean;
-}) => {
-  const hasLiked = tweet?.likes && tweet.likes.length > 0;
-  const likeTweet = useLikeTweet();
+  isOnFeed?: boolean;
+}
 
+const tweetFeedDate = (date: Date) => {
+  if (!date) return null;
+  return dayjs(new Date()).diff(date, "hours") > 24
+    ? dayjs(date).format("MMM D")
+    : dayjs(date).fromNow(true);
+};
+
+const tweetDate = (date: Date) => {
+  if (!date) return null;
+  return dayjs(date).format("H:mm A · MMM D, YYYY");
+};
+
+export const Tweet = ({ tweet, isOnFeed = false }: TweetProps) => {
   const router = useRouter();
 
   return (
     <div
-      className="flex gap-2 border-b p-4 hover:cursor-pointer"
+      className="flex cursor-pointer flex-col gap-4 border-b p-4"
       id={tweet.id}
       onClick={(e) => {
-        if ((e.target as Element).id === tweet.id && withLink) {
+        if ((e.target as Element).id === tweet.id && isOnFeed) {
           router.push(`/${tweet.author.handle!}/status/${tweet.id}`);
         }
       }}
     >
-      <MyAvatar image={tweet.author.image} />
-      <div className="flex hover:cursor-default">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-1">
-            <UserTag user={tweet.author} horizontal />
-            <span className="text-slate-500">·</span>
-            <span className="text-sm text-slate-500">
-              {dayjs(tweet.createdAt).fromNow(true)}
-            </span>
+      <div className="flex gap-2">
+        <MyAvatar image={tweet.author.image} />
+        <div className="flex flex-1 flex-col gap-0 hover:cursor-default">
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1" id={tweet.id}>
+              <UserTag user={tweet.author} horizontal={isOnFeed} />
+              {isOnFeed && (
+                <>
+                  <span className="text-slate-500">·</span>
+                  <span className="text-sm text-slate-500">
+                    {tweetFeedDate(tweet.createdAt)}
+                  </span>
+                </>
+              )}
+              <div id={tweet.id} className="flex-1 hover:cursor-pointer">
+                &shy;
+              </div>
+            </div>
           </div>
+          {isOnFeed && (
+            <>
+              <div className="flex hover:cursor-pointer" id={tweet.id}>
+                <span className="whitespace-pre-wrap">{tweet.text}</span>
+              </div>
+              <div
+                className="mt-2 flex justify-between hover:cursor-pointer"
+                id={tweet.id}
+              >
+                <TweetActionsAndStatuses tweet={tweet} isOnFeed />
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+      {!isOnFeed && (
+        <>
           <div className="flex">
             <span className="whitespace-pre-wrap">{tweet.text}</span>
           </div>
-          <div className="mt-1 flex gap-6">
-            <div className="group flex cursor-pointer gap-2 py-1 pr-2 text-slate-500 hover:text-blue-500">
-              <MessageCircle size={18} />
-              <span className="text-sm">25</span>
-            </div>
-            <div className="group flex cursor-pointer gap-2 py-1 pr-2 text-slate-500 hover:text-green-500">
-              <Repeat2 size={18} />
-              <span className="text-sm">4</span>
-            </div>
-            <div
-              className={`group flex cursor-pointer gap-2 py-1 pr-2 hover:text-red-500 ${
-                hasLiked ? "text-red-500" : "text-slate-500"
-              }`}
-            >
-              <Heart
-                size={18}
-                fill={hasLiked ? "red" : ""}
-                onClick={() => likeTweet.mutate({ tweetId: tweet.id })}
-              />
-              <span className="text-sm">{tweet._count.likes}</span>
-            </div>
+          <div className="flex">
+            <span className="text-base text-slate-500">
+              {tweetDate(tweet.createdAt)}
+            </span>
           </div>
-        </div>
+          <Separator />
+          <TweetActionsAndStatuses tweet={tweet} />
+        </>
+      )}
+    </div>
+  );
+};
+
+interface TweetActionsAndStatusesProps {
+  tweet: TweetWithAuthorAndLikes;
+  isOnFeed?: boolean;
+}
+
+const TweetActionsAndStatuses = ({
+  tweet,
+  isOnFeed = false,
+}: TweetActionsAndStatusesProps) => {
+  return isOnFeed ? (
+    <TweetActions tweet={tweet} isOnFeed />
+  ) : (
+    <div className="flex flex-col gap-4">
+      <TweetStatuses tweet={tweet} />
+      <Separator />
+      <div className="flex justify-between">
+        <TweetActions tweet={tweet} />
       </div>
     </div>
+  );
+};
+
+enum TweetStatusTypes {
+  Like,
+  Repost,
+  Quote,
+  Reply,
+  Bookmark,
+}
+
+interface TweetStatusProps {
+  type: TweetStatusTypes;
+  title: string;
+  value: number;
+}
+
+const TweetStatus = ({ title, value }: TweetStatusProps) => {
+  return (
+    <span className="text-sm font-light text-slate-500" key={"status"}>
+      <span className="font-bold text-primary">{value} </span>
+      {title}
+    </span>
+  );
+};
+
+interface TweetStatusesProps {
+  tweet: TweetWithAuthorAndLikes;
+}
+
+const TweetStatuses = ({ tweet }: TweetStatusesProps) => {
+  const statuses: TweetStatusProps[] = [
+    {
+      type: TweetStatusTypes.Repost,
+      title: "Reposts",
+      value: 4,
+    },
+    {
+      type: TweetStatusTypes.Quote,
+      title: "Quotes",
+      value: 57,
+    },
+    {
+      type: TweetStatusTypes.Like,
+      title: "Likes",
+      value: tweet._count.likes,
+    },
+    {
+      type: TweetStatusTypes.Bookmark,
+      title: "Bookmarks",
+      value: 143,
+    },
+  ];
+  return (
+    <div className="flex gap-6">
+      {statuses.map((status) => (
+        <TweetStatus key={status.type} {...status} />
+      ))}
+    </div>
+  );
+};
+
+enum TweetActionTypes {
+  Like,
+  Comment,
+  Repost,
+  Bookmark,
+  Share,
+}
+
+interface TweetActionProps {
+  type: TweetActionTypes;
+  showCount?: boolean;
+  count?: number;
+  Icon?: LucideIcon;
+  iconSize?: number;
+  color?: string;
+  handleAction?: () => void;
+  isActive?: boolean;
+  activeColor?: string;
+}
+
+const TweetAction = ({
+  type,
+  showCount = false,
+  count = 0,
+  Icon = BoxIcon,
+  iconSize = 18,
+  color = "text-blue-500",
+  handleAction,
+  isActive = false,
+  activeColor = "blue",
+}: TweetActionProps) => {
+  return (
+    <div
+      key={type}
+      className={`flex cursor-pointer gap-4 ${
+        isActive ? color : "text-slate-500"
+      } hover:${color}`}
+      onClick={handleAction}
+    >
+      <Icon size={iconSize} fill={isActive ? activeColor : ""} />
+      {showCount && <span className="text-sm">{count}</span>}
+    </div>
+  );
+};
+
+interface TweetActionsProps {
+  tweet: TweetWithAuthorAndLikes;
+  isOnFeed?: boolean;
+}
+
+const TweetActions = ({ tweet, isOnFeed = false }: TweetActionsProps) => {
+  const likeTweet = useLikeTweet();
+  const tweetActions: TweetActionProps[] = [
+    {
+      type: TweetActionTypes.Comment,
+      showCount: isOnFeed,
+      count: 12,
+      Icon: MessageCircle,
+      color: "text-blue-500",
+    },
+    {
+      type: TweetActionTypes.Repost,
+      showCount: isOnFeed,
+      count: 4,
+      Icon: Repeat2,
+      color: "text-green-500",
+    },
+    {
+      type: TweetActionTypes.Like,
+      showCount: isOnFeed,
+      count: tweet?._count.likes,
+      Icon: Heart,
+      color: "text-red-500",
+      handleAction: () => likeTweet.mutate({ tweetId: tweet.id }),
+      isActive: tweet.likes.length > 0,
+      activeColor: "red",
+    },
+    {
+      type: TweetActionTypes.Bookmark,
+      showCount: false,
+      Icon: BookmarkIcon,
+      count: 143,
+    },
+    {
+      type: TweetActionTypes.Share,
+      showCount: false,
+      Icon: ShareIcon,
+      count: 0,
+    },
+  ];
+
+  return (
+    <>
+      {tweetActions.map((action) => (
+        <div
+          key={action.type}
+          className={`${
+            isOnFeed
+              ? "flex justify-between hover:cursor-pointer"
+              : "flex flex-1 justify-center"
+          }`}
+        >
+          <TweetAction {...action} iconSize={isOnFeed ? 18 : 20} />
+        </div>
+      ))}
+    </>
   );
 };
