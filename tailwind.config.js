@@ -80,4 +80,10 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
+  safelist: [
+    {
+      pattern: /text-(red|green|blue)-(100|500|700)/,
+      variants: ['hover']
+    },
+  ],
 };
