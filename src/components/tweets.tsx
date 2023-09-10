@@ -18,6 +18,8 @@ import { api } from "~/utils/api";
 import { MyAvatar } from "./my-avatar";
 import { UserTag } from "./user-tag";
 import { Tweeter } from "~/components/tweeter";
+import { TweeterDialog } from "~/components/tweeter-dialog";
+import useTweeterDialog from "~/hooks/useTweeterDialog";
 
 dayjs.extend(relativeTime);
 
@@ -42,7 +44,7 @@ interface TweetProps {
   isOnFeed?: boolean;
 }
 
-const tweetFeedDate = (date: Date) => {
+export const tweetFeedDate = (date: Date) => {
   if (!date) return null;
   return dayjs(new Date()).diff(date, "hours") > 24
     ? dayjs(date).format("MMM D")
@@ -64,7 +66,7 @@ export const Tweet = ({ tweet, isOnFeed = false }: TweetProps) => {
       enabled: !isOnFeed,
     },
   );
-  console.log("DATA", commentData);
+  console.log("DATA", tweet);
 
   return (
     <>
@@ -215,7 +217,7 @@ const TweetStatuses = ({ tweet }: TweetStatusesProps) => {
     },
   ];
   return (
-    <div className="flex gap-6">
+    <div className="flex flex-wrap gap-6">
       {statuses.map((status) => (
         <TweetStatus key={status.type} {...status} />
       ))}
@@ -275,6 +277,8 @@ interface TweetActionsProps {
 
 const TweetActions = ({ tweet, isOnFeed = false }: TweetActionsProps) => {
   const likeTweet = useLikeTweet();
+  const tweeterdialog = useTweeterDialog((state) => state);
+  // tweeterdialog.setReplyTo(tweet);
 
   const tweetActions: TweetActionProps[] = [
     {
@@ -283,6 +287,7 @@ const TweetActions = ({ tweet, isOnFeed = false }: TweetActionsProps) => {
       count: tweet._count.replies,
       Icon: MessageCircle,
       color: "text-blue-500",
+      handleAction: () => tweeterdialog.setOpenWithComment(tweet),
     },
     {
       type: TweetActionTypes.Repost,
@@ -317,6 +322,7 @@ const TweetActions = ({ tweet, isOnFeed = false }: TweetActionsProps) => {
 
   return (
     <>
+      <TweeterDialog />
       {tweetActions.map((action) => (
         <div
           key={`${action.type}${tweet.id}`}

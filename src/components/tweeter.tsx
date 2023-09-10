@@ -43,7 +43,7 @@ export const Tweeter = ({
   return (
     <div
       className={`${
-        isModal ? "pt-8" : isReply ? "" : "hidden border-b p-4 xs:block"
+        isReply ? "" : isModal ? "pt-8" : "hidden border-b p-4 xs:block"
       }`}
     >
       <div className="flex w-full flex-col gap-4">
