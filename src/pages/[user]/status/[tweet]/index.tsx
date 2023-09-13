@@ -3,11 +3,13 @@ import type { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect, useRef } from "react";
 import { FeedBottomMobile } from "~/components/feed-bottom-mobile";
 import { FeedTopMobile } from "~/components/feed-top-mobile";
 import { Sidebar } from "~/components/sidebar";
 import { TweeterDialog } from "~/components/tweeter-dialog";
 import { Tweet } from "~/components/tweets";
+import { Separator } from "~/components/ui/separator";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
 
@@ -17,15 +19,35 @@ const TweetPage = () => {
 
   const tweetId = Array.isArray(tweet) ? tweet[0] : tweet;
 
-  if (!tweetId) return null;
+  const {
+    data: tweetWithParents,
+    isLoading,
+    isSuccess,
+  } = api.tweet.getOneWithParents.useQuery(
+    {
+      tweet: tweetId!,
+    },
+    { enabled: !!tweetId },
+  );
 
-  const { data, isLoading } = api.tweet.getOne.useQuery({
-    tweet: tweetId,
-  });
+  const elementRef = useRef<HTMLDivElement>(null);
 
-  if (isLoading) return null;
-  if (!data) return null;
-  //   return <Tweet tweet={data} />;
+  useEffect(() => {
+    if (
+      tweetWithParents?.parentTweets &&
+      tweetWithParents?.parentTweets?.length > 0 &&
+      elementRef.current
+    ) {
+      const offset = 61 + 20;
+      elementRef.current.scrollIntoView();
+      window.scrollBy(0, -offset);
+    }
+  }, [isSuccess]);
+
+  if (!tweetWithParents?.tweet) {
+    return null;
+  }
+
   return (
     <>
       <Head>
@@ -43,8 +65,8 @@ const TweetPage = () => {
                     <span className="flex items-center gap-6 text-xl font-semibold">
                       <Link
                         href={
-                          data?.parentTweetId
-                            ? `/${data.author.handle}/status/${data.parentTweetId}`
+                          tweetWithParents?.tweet?.parentTweetId
+                            ? `/${tweetWithParents?.tweet?.author.handle}/status/${tweetWithParents?.tweet?.parentTweetId}`
                             : "/"
                         }
                       >
@@ -56,7 +78,31 @@ const TweetPage = () => {
                 </div>
                 <FeedBottomMobile />
                 <TweeterDialog />
-                <Tweet tweet={data} />
+                {!isLoading && isSuccess && (
+                  <div className="pt-4">
+                    {tweetWithParents?.parentTweets?.map((parent) => (
+                      <div key={parent.id}>
+                        <Tweet
+                          tweet={parent}
+                          isOnFeed
+                          hideBorder
+                          isParentTweet
+                        />
+                        <div className="flex-1 px-9">
+                          <Separator
+                            orientation="vertical"
+                            className="h-8"
+                            decorative
+                          />
+                        </div>
+                      </div>
+                    ))}
+
+                    <div className="min-h-screen" id="here" ref={elementRef}>
+                      <Tweet tweet={tweetWithParents.tweet} isMainTweet />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

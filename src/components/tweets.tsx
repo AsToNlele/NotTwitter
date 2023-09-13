@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import type { LucideIcon } from "lucide-react";
 import {
   BookmarkIcon,
   BoxIcon,
@@ -9,17 +10,16 @@ import {
   Repeat2,
   ShareIcon,
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import type { TweetWithAuthorAndLikes } from "prisma/customTypes";
+import { Tweeter } from "~/components/tweeter";
+import { TweeterDialog } from "~/components/tweeter-dialog";
 import { Separator } from "~/components/ui/separator";
 import { useLikeTweet } from "~/hooks/useLikeTweet";
+import useTweeterDialog from "~/hooks/useTweeterDialog";
 import { api } from "~/utils/api";
 import { MyAvatar } from "./my-avatar";
 import { UserTag } from "./user-tag";
-import { Tweeter } from "~/components/tweeter";
-import { TweeterDialog } from "~/components/tweeter-dialog";
-import useTweeterDialog from "~/hooks/useTweeterDialog";
 
 dayjs.extend(relativeTime);
 
@@ -42,6 +42,9 @@ export const Tweets = () => {
 interface TweetProps {
   tweet: TweetWithAuthorAndLikes;
   isOnFeed?: boolean;
+  hideBorder?: boolean;
+  isParentTweet?: boolean;
+  isMainTweet?: boolean;
 }
 
 export const tweetFeedDate = (date: Date) => {
@@ -56,7 +59,13 @@ const tweetDate = (date: Date) => {
   return dayjs(date).format("H:mm A · MMM D, YYYY");
 };
 
-export const Tweet = ({ tweet, isOnFeed = false }: TweetProps) => {
+export const Tweet = ({
+  tweet,
+  isOnFeed = false,
+  hideBorder = false,
+  isParentTweet = false,
+  isMainTweet = false,
+}: TweetProps) => {
   const router = useRouter();
   const { data: commentData } = api.tweet.getComments.useQuery(
     {
@@ -66,12 +75,13 @@ export const Tweet = ({ tweet, isOnFeed = false }: TweetProps) => {
       enabled: !isOnFeed,
     },
   );
-  console.log("DATA", tweet);
 
   return (
     <>
       <div
-        className="flex cursor-pointer flex-col gap-4 border-b p-4"
+        className={`flex cursor-pointer flex-col gap-4 ${
+          !hideBorder && "border-b"
+        } ${isParentTweet ? "px-4" : isMainTweet ? "px-4 pb-4" : "p-4"}`}
         id={tweet.id}
         onClick={(e) => {
           if ((e.target as Element).id === tweet.id && isOnFeed) {
@@ -80,7 +90,16 @@ export const Tweet = ({ tweet, isOnFeed = false }: TweetProps) => {
         }}
       >
         <div className="flex gap-2">
-          <MyAvatar image={tweet.author.image} />
+          <div className="flex flex-col">
+            <MyAvatar image={tweet.author.image} />
+            {isParentTweet && (
+              <Separator
+                orientation="vertical"
+                className="mx-5 flex-1"
+                decorative
+              />
+            )}
+          </div>
           <div className="flex flex-1 flex-col gap-0 hover:cursor-default">
             <div className="flex flex-col">
               <div className="flex items-center gap-1" id={tweet.id}>

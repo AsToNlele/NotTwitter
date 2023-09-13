@@ -58,4 +58,41 @@ export const tweetRouter = createTRPCRouter({
         },
       });
     }),
+  getOneWithParents: protectedProcedure
+    .input(z.object({ tweet: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { tweet: tweetId } = input;
+
+      const findTweet = async (id: string | null) => {
+        if (!id) {
+          return null;
+        }
+        return prisma.tweet.findFirst({
+          where: { id },
+          include: {
+            author: true,
+            likes: { where: { userId: { equals: session.user.id } } },
+            _count: { select: { likes: true, replies: true } },
+          },
+        });
+      };
+
+      const tweetStack = [];
+      let currentTweet = await findTweet(tweetId);
+
+      while (currentTweet) {
+        tweetStack.push(currentTweet);
+        currentTweet = await findTweet(currentTweet.parentTweetId);
+      }
+
+      if (tweetStack.length === 0) {
+        return { tweet: null, parentTweets: [] };
+      }
+
+      return {
+        tweet: tweetStack[0],
+        parentTweets: tweetStack.slice(1).reverse(),
+      };
+    }),
 });
