@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
 import { FeedBottomMobile } from "~/components/feed-bottom-mobile";
-import { FeedTopMobile } from "~/components/feed-top-mobile";
 import { Sidebar } from "~/components/sidebar";
 import { TweeterDialog } from "~/components/tweeter-dialog";
 import { Tweet } from "~/components/tweets";
@@ -60,21 +59,18 @@ const TweetPage = () => {
             <div className="w-full xl:w-[900px]">
               <div className="flex min-h-screen w-full flex-col break-all border-none xs:border-l xs:border-solid md:w-[650px] md:border-x ">
                 <div className="sticky top-0 z-10 border-b p-4 backdrop-blur">
-                  <FeedTopMobile />
-                  <div className="hidden xs:block">
-                    <span className="flex items-center gap-6 text-xl font-semibold">
-                      <Link
-                        href={
-                          tweetWithParents?.tweet?.parentTweetId
-                            ? `/${tweetWithParents?.tweet?.author.handle}/status/${tweetWithParents?.tweet?.parentTweetId}`
-                            : "/"
-                        }
-                      >
-                        <ArrowLeft />
-                      </Link>{" "}
-                      Tweet
-                    </span>
-                  </div>
+                  <span className="flex items-center gap-6 text-xl font-semibold">
+                    <Link
+                      href={
+                        tweetWithParents?.tweet?.parentTweetId
+                          ? `/${tweetWithParents?.tweet?.author.handle}/status/${tweetWithParents?.tweet?.parentTweetId}`
+                          : "/"
+                      }
+                    >
+                      <ArrowLeft />
+                    </Link>{" "}
+                    Tweet
+                  </span>
                 </div>
                 <FeedBottomMobile />
                 <TweeterDialog />
