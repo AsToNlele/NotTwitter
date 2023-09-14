@@ -1,9 +1,8 @@
 import type { Like } from "@prisma/client";
 import type { TweetWithAuthorAndLikes } from "prisma/customTypes";
 
-const optimisticallyChangeLike = (
-  oldTweet: TweetWithAuthorAndLikes,
-): TweetWithAuthorAndLikes => {
+const optimisticallyChangeLike = (oldTweet: TweetWithAuthorAndLikes) => {
+  if (!oldTweet) return oldTweet;
   if (oldTweet?.likes.length > 0) {
     const newLikes: Like[] = [];
     return {
