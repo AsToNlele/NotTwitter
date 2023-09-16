@@ -49,7 +49,7 @@ export const tweetRouter = createTRPCRouter({
     .input(z.object({ tweet: z.string() }))
     .query(({ ctx, input }) => {
       return ctx.prisma.tweet.findMany({
-        where: { parentTweetId: input.tweet },
+        where: { parentTweetId: input.tweet, authorId: { not: null } },
         include: {
           author: true,
           // Check if the current user has liked the tweet
