@@ -59,6 +59,66 @@ const tweetDate = (date: Date) => {
   return dayjs(date).format("H:mm A · MMM D, YYYY");
 };
 
+export const DeletedTweet = ({
+  tweet,
+  isOnFeed = false,
+  hideBorder = false,
+  isParentTweet = false,
+  isMainTweet = false,
+}: TweetProps) => {
+  const { data: commentData } = api.tweet.getComments.useQuery({
+    tweet: tweet.id,
+  });
+  return (
+    <>
+      <div
+        className={`flex cursor-pointer flex-col gap-4 ${
+          !hideBorder && "border-b"
+        } ${isParentTweet ? "px-4" : isMainTweet ? "px-4 pb-4" : "p-4"}`}
+      >
+        <div className="flex gap-2">
+          <div className="flex flex-col">
+            {isParentTweet && (
+              <Separator
+                orientation="vertical"
+                className="mx-5 flex-1"
+                decorative
+              />
+            )}
+          </div>
+          <div className="flex flex-1 flex-col gap-0 hover:cursor-default">
+            <div className="flex flex-col"></div>
+            {isOnFeed && (
+              <>
+                <div className="flex hover:cursor-pointer">
+                  <span className="whitespace-pre-wrap">
+                    {"This tweet has been deleted"}
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+        {!isOnFeed && (
+          <>
+            <div className="flex">
+              <span className="whitespace-pre-wrap">
+                This tweet has been deleted.
+              </span>
+            </div>
+            <div className="flex"></div>
+          </>
+        )}
+      </div>
+      {!isOnFeed &&
+        commentData?.map((comment) => (
+          <Tweet key={tweet.id} tweet={comment} isOnFeed />
+        ))}
+      <div></div>
+    </>
+  );
+};
+
 export const Tweet = ({
   tweet,
   isOnFeed = false,
@@ -75,6 +135,18 @@ export const Tweet = ({
       enabled: !isOnFeed,
     },
   );
+
+  if (!tweet.author) {
+    return (
+      <DeletedTweet
+        tweet={tweet}
+        isOnFeed={isOnFeed}
+        hideBorder={hideBorder}
+        isParentTweet={isParentTweet}
+        isMainTweet={isMainTweet}
+      />
+    );
+  }
 
   return (
     <>
