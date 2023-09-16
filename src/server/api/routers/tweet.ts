@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
@@ -94,5 +95,26 @@ export const tweetRouter = createTRPCRouter({
         tweet: tweetStack[0],
         parentTweets: tweetStack.slice(1).reverse(),
       };
+    }),
+  delete: protectedProcedure
+    .input(z.object({ tweet: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const tweet = await ctx.prisma.tweet.findUnique({
+        where: { id: input.tweet },
+      });
+      if (!tweet) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+      if (tweet.authorId !== ctx.session.user.id) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+      return await ctx.prisma.tweet.update({
+        where: { id: input.tweet },
+        data: {
+          author: { disconnect: true },
+          text: "",
+          likes: { deleteMany: {} },
+        },
+      });
     }),
 });
