@@ -13,11 +13,9 @@ const config = {
         project: path.join(__dirname, "tsconfig.json"),
       },
       rules: {
-        "@typescript-eslint/no-misused-promises": "off",
         "@typescript-eslint/no-null-assertion": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/no-empty-interface": "off",
-        "@typescript-eslint/no-floating-promises": "off",
       },
     },
   ],

@@ -71,7 +71,7 @@ export const Sidebar = () => {
                 <DropdownMenuLabel>Account</DropdownMenuLabel>
                 <DropdownMenuSeparator className="mx-0" />
                 <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => signOut()}>
+                <DropdownMenuItem onClick={() => void signOut()}>
                   Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>

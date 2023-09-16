@@ -61,11 +61,11 @@ const useLikeTweet = () => {
         );
       }
     },
-    onSettled: (value) => {
-      utils.tweet.getAll.invalidate();
-      utils.tweet.getOne.invalidate({ tweet: value?.tweetId });
-      utils.tweet.getComments.invalidate({ tweet: tweetId });
-      utils.tweet.getOneWithParents.invalidate({ tweet: tweetId });
+    onSettled: async (value) => {
+      await utils.tweet.getAll.invalidate();
+      await utils.tweet.getOne.invalidate({ tweet: value?.tweetId });
+      await utils.tweet.getComments.invalidate({ tweet: tweetId });
+      await utils.tweet.getOneWithParents.invalidate({ tweet: tweetId });
     },
   });
 

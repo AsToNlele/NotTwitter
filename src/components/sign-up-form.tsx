@@ -16,7 +16,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       <Button
         variant="outline"
         type="button"
-        onClick={() => signIn("discord", { callbackUrl: "/" })}
+        onClick={() => void signIn("discord", { callbackUrl: "/" })}
       >
         Discord
       </Button>
