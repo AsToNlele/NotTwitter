@@ -7,14 +7,23 @@ import {
   Heart,
   Loader2,
   MessageCircle,
+  MoreHorizontal,
   Repeat2,
   ShareIcon,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import type { TweetWithAuthorAndLikes } from "prisma/customTypes";
 import { Tweeter } from "~/components/tweeter";
 import { TweeterDialog } from "~/components/tweeter-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import { Separator } from "~/components/ui/separator";
+import { useDeleteTweet } from "~/hooks/useDeleteTweet";
 import { useLikeTweet } from "~/hooks/useLikeTweet";
 import useTweeterDialog from "~/hooks/useTweeterDialog";
 import { api } from "~/utils/api";
@@ -136,6 +145,9 @@ export const Tweet = ({
     },
   );
 
+  const deleteTweet = useDeleteTweet();
+  const { data: session } = useSession();
+
   if (!tweet.author) {
     return (
       <DeletedTweet
@@ -157,7 +169,7 @@ export const Tweet = ({
         id={tweet.id}
         onClick={(e) => {
           if ((e.target as Element).id === tweet.id && isOnFeed) {
-            router.push(`/${tweet.author.handle!}/status/${tweet.id}`);
+            void router.push(`/${tweet.author?.handle}/status/${tweet.id}`);
           }
         }}
       >
@@ -174,19 +186,32 @@ export const Tweet = ({
           </div>
           <div className="flex flex-1 flex-col gap-0 hover:cursor-default">
             <div className="flex flex-col">
-              <div className="flex items-center gap-1" id={tweet.id}>
-                <UserTag user={tweet.author} horizontal={isOnFeed} />
-                {isOnFeed && (
-                  <>
-                    <span className="text-slate-500">·</span>
-                    <span className="text-sm text-slate-500">
-                      {tweetFeedDate(tweet.createdAt)}
-                    </span>
-                  </>
-                )}
-                <div id={tweet.id} className="flex-1 hover:cursor-pointer">
-                  &shy;
+              <div className="flex items-center justify-between" id={tweet.id}>
+                <div className="flex items-center gap-1">
+                  <UserTag user={tweet.author} horizontal={isOnFeed} />
+                  {isOnFeed && (
+                    <>
+                      <span className="text-slate-500">·</span>
+                      <span className="text-sm text-slate-500">
+                        {tweetFeedDate(tweet.createdAt)}
+                      </span>
+                    </>
+                  )}
                 </div>
+                {tweet.author.id === session?.user?.id && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="">
+                      <MoreHorizontal className="text-slate-500" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="">
+                      <DropdownMenuItem
+                        onClick={() => deleteTweet.mutate({ tweet: tweet.id })}
+                      >
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </div>
             </div>
             {isOnFeed && (
@@ -369,7 +394,6 @@ interface TweetActionsProps {
 const TweetActions = ({ tweet, isOnFeed = false }: TweetActionsProps) => {
   const likeTweet = useLikeTweet();
   const tweeterdialog = useTweeterDialog((state) => state);
-  // tweeterdialog.setReplyTo(tweet);
 
   const tweetActions: TweetActionProps[] = [
     {
