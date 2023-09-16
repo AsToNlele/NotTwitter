@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
@@ -12,23 +13,31 @@ export const commentRouter = createTRPCRouter({
           },
         })
         .then((tweet) => {
-          if (tweet) {
-            return ctx.prisma.tweet.create({
-              data: {
-                text: input.text,
-                parentTweet: {
-                  connect: {
-                    id: input.tweetId,
-                  },
-                },
-                author: {
-                  connect: {
-                    id: ctx.session.user.id,
-                  },
-                },
-              },
+          if (!tweet) {
+            throw new TRPCError({
+              code: "NOT_FOUND",
             });
           }
+          if (!tweet.authorId) {
+            throw new TRPCError({
+              code: "BAD_REQUEST",
+            });
+          }
+          return ctx.prisma.tweet.create({
+            data: {
+              text: input.text,
+              parentTweet: {
+                connect: {
+                  id: input.tweetId,
+                },
+              },
+              author: {
+                connect: {
+                  id: ctx.session.user.id,
+                },
+              },
+            },
+          });
         });
     }),
 });
