@@ -12,7 +12,7 @@ const TweetPreview = ({ tweet }: { tweet: TweetWithAuthorAndLikes }) => {
   return (
     <div className="flex gap-4 pt-8">
       <div className="flex flex-col">
-        <MyAvatar image={tweet.author.image} />
+        <MyAvatar image={tweet?.author?.image} />
         <Separator orientation="vertical" className="mx-5 max-h-8" decorative />
       </div>
       <div className="flex flex-1 flex-col gap-0 hover:cursor-default">

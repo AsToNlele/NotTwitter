@@ -62,7 +62,8 @@ const TweetPage = () => {
                   <span className="flex items-center gap-6 text-xl font-semibold">
                     <Link
                       href={
-                        tweetWithParents?.tweet?.parentTweetId
+                        tweetWithParents?.tweet?.parentTweetId &&
+                        tweetWithParents?.tweet?.author
                           ? `/${tweetWithParents?.tweet?.author.handle}/status/${tweetWithParents?.tweet?.parentTweetId}`
                           : "/"
                       }
