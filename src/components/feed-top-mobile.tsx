@@ -41,7 +41,7 @@ export const FeedTopMobile = () => {
               </div>
             </div>
           </div>
-          <Button className="mt-4" onClick={() => signOut()}>
+          <Button className="mt-4" onClick={() => void signOut()}>
             Logout
           </Button>
         </SheetContent>
