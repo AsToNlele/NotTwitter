@@ -6,7 +6,7 @@ export const tweetRouter = createTRPCRouter({
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.tweet.findMany({
       // Exclude replies
-      where: { parentTweetId: null },
+      where: { parentTweetId: null, authorId: { not: null } },
       orderBy: { createdAt: "desc" },
       include: {
         author: true,
