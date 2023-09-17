@@ -1,4 +1,3 @@
-import { FeedBottomMobile } from "./feed-bottom-mobile";
 import { FeedTop } from "./feed-top";
 import { Tweeter } from "./tweeter";
 import { TweeterDialog } from "./tweeter-dialog";
@@ -10,7 +9,6 @@ export const Feed = () => {
       <div className="w-full xl:w-[900px]">
         <div className="flex min-h-screen w-full flex-col break-all border-none xs:border-l xs:border-solid md:w-[650px] md:border-x ">
           <TweeterDialog />
-          <FeedBottomMobile />
           <FeedTop />
           <Tweeter />
           <Tweets />
