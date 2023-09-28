@@ -15,7 +15,6 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import type { TweetWithAuthorAndLikes } from "prisma/customTypes";
 import { Tweeter } from "~/components/tweeter";
-import { TweeterDialog } from "~/components/tweeter-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -437,7 +436,6 @@ const TweetActions = ({ tweet, isOnFeed = false }: TweetActionsProps) => {
 
   return (
     <>
-      <TweeterDialog />
       {tweetActions.map((action) => (
         <div
           key={`${action.type}${tweet.id}`}
