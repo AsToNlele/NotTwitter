@@ -18,6 +18,15 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: {
+    remotePatterns: [
+      // add discord cdn
+      {
+        protocol: "https",
+        hostname: "cdn.discordapp.com",
+      }
+    ]
+  }
 };
 
 export default config;
