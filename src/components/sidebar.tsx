@@ -15,6 +15,7 @@ import { signOut, useSession } from "next-auth/react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import useTweeterDialog from "~/hooks/useTweeterDialog";
+import { TweeterDialog } from "~/components/tweeter-dialog";
 
 const SidebarItem = ({
   icon: Icon,
@@ -83,6 +84,7 @@ export const Sidebar = () => {
           )}
         </div>
       </div>
+      <TweeterDialog />
     </div>
   );
 };
