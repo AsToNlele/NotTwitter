@@ -2,6 +2,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import EditProfileDialog from "~/components/edit-profile-dialog";
 import { Layout } from "~/components/layouts/layout";
+import { ProfileAvatar } from "~/components/profile-avatar";
 import { AspectRatio } from "~/components/ui/aspect-ratio";
 import { api } from "~/utils/api";
 
@@ -31,22 +32,17 @@ const ProfilePage = () => {
           className="absolute h-full w-full"
         />
       </AspectRatio>
-      <div className="flex flex-col gap-1 p-4">
+      <div className="flex flex-col gap-2 p-4">
         <div className="flex flex-wrap justify-between">
-          <div className="relative -mt-[12.5%] h-auto w-1/4 min-w-[44px] px-4 ">
-            <Image
-              src={data?.image ?? "/profile.png"}
-              alt={data?.name ?? ""}
-              height={200}
-              width={200}
-              className="min-w-[44px] rounded-full"
-            />
-          </div>
+          <ProfileAvatar data={data} />
           <EditProfileDialog data={data} />
         </div>
-        <div>
-          <p className="text-lg font-bold leading-tight">{data?.name}</p>
-          <p className="text-slate-500">@{data?.handle}</p>
+        <div className="flex flex-col gap-4">
+          <div>
+            <p className="text-lg font-bold leading-tight">{data?.name}</p>
+            <p className="text-slate-500">@{data?.handle}</p>
+          </div>
+          <p>{data?.description}</p>
         </div>
       </div>
     </Layout>
