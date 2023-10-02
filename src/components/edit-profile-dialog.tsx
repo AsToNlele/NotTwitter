@@ -74,7 +74,7 @@ const EditProfileDialog = ({
           </AspectRatio>
           <div className="flex flex-col">
             <div className="flex flex-wrap justify-between">
-              <div className="relative -mt-[12.5%] h-auto w-1/4 min-w-[44px] px-4 ">
+              <div className="relative -mt-[calc(12.5%+1rem)] h-auto w-[25%] min-w-[44px] sm:-mt-[12.5%] sm:w-[calc(25%-2rem)]">
                 <Image
                   src={data?.image ?? "/profile.png"}
                   alt={data?.name ?? ""}
