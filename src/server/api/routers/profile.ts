@@ -9,4 +9,22 @@ export const profileRouter = createTRPCRouter({
         where: { handle: input.handle },
       });
     }),
+  updateProfile: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        handle: z.string(),
+        description: z.string(),
+      }),
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.user.update({
+        where: { id: ctx.session.user.id },
+        data: {
+          name: input.name,
+          handle: input.handle,
+          description: input.description,
+        },
+      });
+    }),
 });
