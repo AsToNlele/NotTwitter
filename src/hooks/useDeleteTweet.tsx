@@ -30,6 +30,7 @@ const useDeleteTweet = () => {
       }
       await utils.tweet.getAll.invalidate();
       await utils.tweet.getComments.invalidate({ tweet: tweetId });
+      await utils.tweet.getProfileTweets.invalidate();
     },
   });
   return deleteTweet;
