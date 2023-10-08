@@ -46,7 +46,9 @@ export const Sidebar = () => {
             <Link href="/">
               <SidebarItem icon={HomeIcon} title="Home" />
             </Link>
-            <SidebarItem icon={User2} title="Profile" />
+            <Link href={data?.user?.handle ? `/${data.user.handle}` : "#"}>
+              <SidebarItem icon={User2} title="Profile" />
+            </Link>
             <Button
               className="mx-2 font-semibold lg:mx-0 lg:mr-2"
               onClick={() => setOpen(true)}
@@ -71,7 +73,11 @@ export const Sidebar = () => {
               <DropdownMenuContent className="w-24 rounded-md border p-1 lg:w-48">
                 <DropdownMenuLabel>Account</DropdownMenuLabel>
                 <DropdownMenuSeparator className="mx-0" />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <Link
+                  href={data?.user?.handle ? `/${data?.user?.handle}` : "#"}
+                >
+                  <DropdownMenuItem>Profile</DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem onClick={() => void signOut()}>
                   Logout
                 </DropdownMenuItem>
