@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import EditProfileDialog from "~/components/edit-profile-dialog";
 import { Layout } from "~/components/layouts/layout";
 import { ProfileAvatar } from "~/components/profile-avatar";
+import ProfileReplies from "~/components/profile-replies";
 import ProfileTweets from "~/components/profile-tweets";
 import { AspectRatio } from "~/components/ui/aspect-ratio";
 import { Separator } from "~/components/ui/separator";
@@ -73,7 +74,9 @@ const ProfilePage = () => {
         <TabsContent value="tweets">
           <ProfileTweets handle={userHandle} />
         </TabsContent>
-        <TabsContent value="replies">Replies</TabsContent>
+        <TabsContent value="replies">
+          <ProfileReplies handle={userHandle} />
+        </TabsContent>
         <TabsContent value="likes">Likes</TabsContent>
       </Tabs>
     </Layout>
