@@ -6,6 +6,7 @@ const useCreateTweet = () => {
     onSuccess: () => {
       void utils.tweet.getAll.invalidate();
       void utils.tweet.getProfileTweets.invalidate();
+      void utils.tweet.getProfileReplies.invalidate();
     },
   });
 
