@@ -5,8 +5,9 @@ import { optimisticallyChangeLike } from "~/utils/tweet";
 const useLikeTweet = () => {
   const utils = api.useContext();
   const router = useRouter();
-  const { tweet } = router.query;
+  const { tweet, user } = router.query;
   const tweetId = Array.isArray(tweet) ? tweet[0] : tweet;
+  const userHandle = Array.isArray(user) ? user[0] : user;
 
   const likeOrUnlikeTweet = api.like.like.useMutation({
     onMutate: async (value) => {
@@ -60,12 +61,28 @@ const useLikeTweet = () => {
             : oldData,
         );
       }
+
+      if (userHandle) {
+        await utils.tweet.getProfileLikes.cancel();
+        utils.tweet.getProfileLikes.setData(
+          { handle: userHandle },
+          (oldTweets) =>
+            oldTweets?.map((tweet) =>
+              tweet.id === value?.tweetId
+                ? optimisticallyChangeLike(tweet)
+                : tweet,
+            ),
+        );
+      }
     },
-    onSettled: async (value) => {
-      await utils.tweet.getAll.invalidate();
-      await utils.tweet.getOne.invalidate({ tweet: value?.tweetId });
-      await utils.tweet.getComments.invalidate({ tweet: tweetId });
-      await utils.tweet.getOneWithParents.invalidate({ tweet: tweetId });
+    onSettled: (value) => {
+      void utils.tweet.getAll.invalidate();
+      void utils.tweet.getOne.invalidate({ tweet: value?.tweetId });
+      void utils.tweet.getComments.invalidate({ tweet: tweetId });
+      void utils.tweet.getOneWithParents.invalidate({ tweet: tweetId });
+      void utils.tweet.getProfileTweets.invalidate();
+      void utils.tweet.getProfileReplies.invalidate();
+      void utils.tweet.getProfileLikes.invalidate();
     },
   });
 
