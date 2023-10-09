@@ -6,6 +6,7 @@ import { ProfileAvatar } from "~/components/profile-avatar";
 import ProfileTweets from "~/components/profile-tweets";
 import { AspectRatio } from "~/components/ui/aspect-ratio";
 import { Separator } from "~/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { api } from "~/utils/api";
 
 const ProfilePage = () => {
@@ -47,8 +48,34 @@ const ProfilePage = () => {
           <p>{data?.description}</p>
         </div>
       </div>
-      <Separator />
-      <ProfileTweets handle={userHandle} />
+      <Tabs defaultValue="tweets">
+        <TabsList className="w-full bg-background">
+          <TabsTrigger
+            className="text-md rounded-none data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0]"
+            value="tweets"
+          >
+            Tweets
+          </TabsTrigger>
+          <TabsTrigger
+            className="text-md rounded-none data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0]"
+            value="replies"
+          >
+            Replies
+          </TabsTrigger>
+          <TabsTrigger
+            className="text-md rounded-none data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0]"
+            value="likes"
+          >
+            Likes
+          </TabsTrigger>
+        </TabsList>
+        <Separator />
+        <TabsContent value="tweets">
+          <ProfileTweets handle={userHandle} />
+        </TabsContent>
+        <TabsContent value="replies">Replies</TabsContent>
+        <TabsContent value="likes">Likes</TabsContent>
+      </Tabs>
     </Layout>
   );
 };
