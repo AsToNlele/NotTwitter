@@ -1,4 +1,4 @@
-import { MyAvatar } from "./my-avatar";
+import { MyAvatar } from "../../components/my-avatar";
 import {
   Sheet,
   SheetContent,
@@ -7,9 +7,9 @@ import {
   SheetTrigger,
 } from "~/components/ui/sheet";
 import { Logo } from "~/components/logo";
-import { UserTag } from "./user-tag";
+import { UserTag } from "../../components/user-tag";
 import { signOut, useSession } from "next-auth/react";
-import { Button } from "./ui/button";
+import { Button } from "../../components/ui/button";
 
 export const FeedTopMobile = () => {
   const { data } = useSession();

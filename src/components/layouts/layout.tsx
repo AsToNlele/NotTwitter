@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import Head from "next/head";
 import Link from "next/link";
-import { FeedBottomMobile } from "~/components/feed-bottom-mobile";
+import { FeedBottomMobile } from "~/features/Feed/feed-bottom-mobile";
 import { Sidebar } from "~/components/sidebar";
 
 interface LayoutProps {

@@ -1,6 +1,6 @@
 import { Loader2 } from "lucide-react";
 import { Tweet } from "~/components/tweets";
-import { useProfileLikes } from "~/hooks/useProfileLikes";
+import { useProfileLikes } from "~/features/Profile/hooks/useProfileLikes";
 
 interface ProfileLikesProps {
   handle: string | undefined;

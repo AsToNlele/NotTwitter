@@ -1,6 +1,6 @@
 import { FeedTop } from "./feed-top";
-import { Tweeter } from "../features/Tweeter/tweeter";
-import { Tweets } from "./tweets";
+import { Tweeter } from "../Tweeter/tweeter";
+import { Tweets } from "../../components/tweets";
 
 export const Feed = () => {
   return (
