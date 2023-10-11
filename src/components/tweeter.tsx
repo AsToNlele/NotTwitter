@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import type { FocusEvent } from "react";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import sanitizeHtml from "sanitize-html";
 import useCommentTweet from "~/hooks/useCommentTweet";
 import useCreateTweet from "~/hooks/useCreateTweet";
@@ -9,6 +9,45 @@ import useTweeterDialog from "~/hooks/useTweeterDialog";
 import { getCaret, setCaret } from "~/lib/utils";
 import { MyAvatar } from "./my-avatar";
 import { Button } from "./ui/button";
+import { useTagger } from "~/hooks/useTagger";
+import { ScrollArea } from "~/components/ui/scroll-area";
+
+const Tagger = memo(function Tagger({
+  handle,
+  selectHandle,
+}: {
+  handle: string;
+  selectHandle: (handle: string) => void;
+}) {
+  const { data } = useTagger(handle);
+  return (
+    <div className="relative">
+      <div
+        className={`${
+          data && data?.length > 0 ? "block" : "hidden"
+        } bg-red absolute left-0 top-0 h-full w-full bg-opacity-50`}
+      >
+        <ScrollArea className="bg-red h-32 w-[50%] rounded-md border">
+          <div className="flex flex-col gap-2 bg-red-400 p-4">
+            {data?.map((d) => (
+              <div
+                key={d.handle}
+                className="flex gap-2 hover:bg-green-400"
+                onClick={() => selectHandle(d.handle!)}
+              >
+                <MyAvatar image={d.image} />
+                <div className="flex flex-col">
+                  <div className="font-semibold">{d.name}</div>
+                  <div className="text-gray-500">@{d.handle}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+      </div>
+    </div>
+  );
+});
 
 interface TweeterProps {
   isModal?: boolean;
@@ -29,12 +68,63 @@ export const Tweeter = ({
     useCommentTweet();
 
   const divRef = useRef<HTMLDivElement>(null);
+  const [tag, setTag] = useState("");
   const caretPos = useRef<number>(0);
+  const indexDiff = useRef<number>(0);
 
   useEffect(() => {
-    setCaret(divRef.current, caretPos.current);
+    setCaret(divRef.current, caretPos.current + indexDiff.current);
+    indexDiff.current = 0;
     divRef.current?.focus();
+
+    const position = getCaret(divRef.current);
+
+    setTag(getTag(content, position));
   }, [content]);
+
+  const handleSelectHandle = (handle: string) => {
+    const caretPosition = caretPos.current;
+
+    const atIndex = content.lastIndexOf("@", caretPosition - 1);
+    if (atIndex === -1) {
+      return "";
+    }
+
+    const whitespaceIndex = content.indexOf(" ", caretPosition);
+    const endIndex = whitespaceIndex === -1 ? content.length : whitespaceIndex;
+    const finalString =
+      content.substring(0, atIndex) +
+      "@" +
+      handle +
+      content.substring(endIndex);
+
+    indexDiff.current = handle.length + 1 - (endIndex - atIndex);
+
+    setContent(finalString);
+  };
+
+  const getTag = (content: string, caretPosition: number): string => {
+    const atIndex = content.lastIndexOf("@", caretPosition - 1);
+    if (atIndex === -1) {
+      return "";
+    }
+
+    const prefix = content[atIndex - 1];
+    if (prefix && !/\s/.test(prefix)) {
+      return "";
+    }
+
+    const afterAt = content.slice(atIndex + 1, caretPosition);
+    if (afterAt.includes(" ")) {
+      return "";
+    }
+
+    const whitespaceIndex = content.indexOf(" ", caretPosition);
+    const tagEndIndex =
+      whitespaceIndex === -1 ? content.length : whitespaceIndex;
+
+    return content.slice(atIndex + 1, tagEndIndex);
+  };
 
   const onInput = (evt: FocusEvent<HTMLDivElement>) => {
     caretPos.current = getCaret(divRef.current);
@@ -79,6 +169,7 @@ export const Tweeter = ({
               onInput={onInput}
               dangerouslySetInnerHTML={{ __html: content }}
             />
+            <Tagger handle={tag} selectHandle={handleSelectHandle} />
           </div>
         </div>
         <div className="flex justify-end">
