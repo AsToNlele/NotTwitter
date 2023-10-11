@@ -1,5 +1,5 @@
 import type { GetServerSidePropsContext } from "next";
-import { Feed } from "~/components/feed";
+import { Feed } from "~/features/Feed/feed";
 import { Layout } from "~/components/layouts/layout";
 import { getServerAuthSession } from "~/server/auth";
 

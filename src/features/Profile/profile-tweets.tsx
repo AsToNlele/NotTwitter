@@ -1,6 +1,6 @@
 import { Loader2 } from "lucide-react";
 import { Tweet } from "~/components/tweets";
-import { useProfileTweets } from "~/hooks/useProfileTweets";
+import { useProfileTweets } from "~/features/Profile/hooks/useProfileTweets";
 
 interface ProfileTweetsProps {
   handle: string | undefined;

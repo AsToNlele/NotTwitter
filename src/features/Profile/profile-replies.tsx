@@ -1,6 +1,6 @@
 import { Loader2 } from "lucide-react";
 import { Tweet } from "~/components/tweets";
-import { useProfileReplies } from "~/hooks/useProfileReplies";
+import { useProfileReplies } from "~/features/Profile/hooks/useProfileReplies";
 
 interface ProfileRepliesProps {
   handle: string | undefined;
