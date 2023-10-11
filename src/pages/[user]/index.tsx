@@ -53,19 +53,19 @@ const ProfilePage = () => {
       <Tabs defaultValue="tweets">
         <TabsList className="w-full bg-background">
           <TabsTrigger
-            className="text-md rounded-none data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0]"
+            className="text-md rounded-none data-[state=active]:!shadow-[inset_0_-1px_0_0,0_1px_0_0]"
             value="tweets"
           >
             Tweets
           </TabsTrigger>
           <TabsTrigger
-            className="text-md rounded-none data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0]"
+            className="text-md rounded-none data-[state=active]:!shadow-[inset_0_-1px_0_0,0_1px_0_0]"
             value="replies"
           >
             Replies
           </TabsTrigger>
           <TabsTrigger
-            className="text-md rounded-none data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0]"
+            className="text-md rounded-none data-[state=active]:!shadow-[inset_0_-1px_0_0,0_1px_0_0]"
             value="likes"
           >
             Likes
