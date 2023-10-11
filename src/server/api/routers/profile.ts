@@ -27,4 +27,16 @@ export const profileRouter = createTRPCRouter({
         },
       });
     }),
+  getHandlesWithPrefix: protectedProcedure
+    .input(z.object({ handle: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.user.findMany({
+        where: {
+          handle: {
+            startsWith: input.handle,
+            mode: "insensitive",
+          },
+        },
+      });
+    }),
 });
