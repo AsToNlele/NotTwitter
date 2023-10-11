@@ -232,7 +232,7 @@ export const Tweet = ({
         {!isOnFeed && (
           <>
             <div className="flex">
-              <span className="whitespace-pre-wrap">{tweet.text}</span>
+              <TweetText text={tweet.text} />
             </div>
             <div className="flex">
               <span className="text-base text-slate-500">
