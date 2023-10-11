@@ -14,8 +14,8 @@ import { UserTag } from "./user-tag";
 import { signOut, useSession } from "next-auth/react";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import useTweeterDialog from "~/hooks/useTweeterDialog";
-import { TweeterDialog } from "~/components/tweeter-dialog";
+import useTweeterDialog from "~/features/Tweeter/hooks/useTweeterDialog";
+import { TweeterDialog } from "~/features/Tweeter/tweeter-dialog";
 
 const SidebarItem = ({
   icon: Icon,

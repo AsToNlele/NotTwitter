@@ -18,7 +18,7 @@ export const getCaret = (el: HTMLDivElement | null) => {
 };
 
 export const setCaret = (el: HTMLDivElement | null, offset: number) => {
-  if (!el || offset === undefined) return;
+  if (!el || offset === undefined || el.textContent === "") return;
   const sel = window.getSelection();
   const range = document.createRange();
 
@@ -31,4 +31,26 @@ export const setCaret = (el: HTMLDivElement | null, offset: number) => {
   range.collapse(true);
   sel?.removeAllRanges();
   sel?.addRange(range);
+};
+
+export const getTag = (content: string, caretPosition: number): string => {
+  const atIndex = content.lastIndexOf("@", caretPosition - 1);
+  if (atIndex === -1) {
+    return "";
+  }
+
+  const prefix = content[atIndex - 1];
+  if (prefix && !/\s/.test(prefix)) {
+    return "";
+  }
+
+  const afterAt = content.slice(atIndex + 1, caretPosition);
+  if (afterAt.includes(" ")) {
+    return "";
+  }
+
+  const whitespaceIndex = content.indexOf(" ", caretPosition);
+  const tagEndIndex = whitespaceIndex === -1 ? content.length : whitespaceIndex;
+
+  return content.slice(atIndex + 1, tagEndIndex);
 };

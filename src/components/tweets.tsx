@@ -14,7 +14,7 @@ import {
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import type { TweetWithAuthorAndLikes } from "prisma/customTypes";
-import { Tweeter } from "~/components/tweeter";
+import { Tweeter } from "~/features/Tweeter/tweeter";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +24,7 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { useDeleteTweet } from "~/hooks/useDeleteTweet";
 import { useLikeTweet } from "~/hooks/useLikeTweet";
-import useTweeterDialog from "~/hooks/useTweeterDialog";
+import useTweeterDialog from "~/features/Tweeter/hooks/useTweeterDialog";
 import { api } from "~/utils/api";
 import { MyAvatar } from "./my-avatar";
 import { UserTag } from "./user-tag";

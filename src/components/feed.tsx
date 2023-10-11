@@ -1,5 +1,5 @@
 import { FeedTop } from "./feed-top";
-import { Tweeter } from "./tweeter";
+import { Tweeter } from "../features/Tweeter/tweeter";
 import { Tweets } from "./tweets";
 
 export const Feed = () => {
