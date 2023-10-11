@@ -1,7 +1,11 @@
-import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+} from "../../components/ui/dialog";
 import { Edit } from "lucide-react";
 import { Tweeter } from "./tweeter";
-import useTweeterDialog from "~/hooks/useTweeterDialog";
+import useTweeterDialog from "~/features/Tweeter/hooks/useTweeterDialog";
 import { tweetFeedDate } from "~/components/tweets";
 import { MyAvatar } from "~/components/my-avatar";
 import { UserTag } from "~/components/user-tag";
