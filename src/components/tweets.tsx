@@ -28,6 +28,7 @@ import useTweeterDialog from "~/features/Tweeter/hooks/useTweeterDialog";
 import { api } from "~/utils/api";
 import { MyAvatar } from "./my-avatar";
 import { UserTag } from "./user-tag";
+import Link from "next/link";
 
 dayjs.extend(relativeTime);
 
@@ -216,7 +217,7 @@ export const Tweet = ({
             {isOnFeed && (
               <>
                 <div className="flex hover:cursor-pointer" id={tweet.id}>
-                  <span className="whitespace-pre-wrap">{tweet.text}</span>
+                  <TweetText text={tweet.text} />
                 </div>
                 <div
                   className="mt-2 flex justify-between hover:cursor-pointer"
@@ -450,4 +451,37 @@ const TweetActions = ({ tweet, isOnFeed = false }: TweetActionsProps) => {
       ))}
     </>
   );
+};
+
+const TweetText = ({ text }: { text: string }) => {
+  const splitByLines = text.split("\n");
+  const elements = splitByLines.map((line) => {
+    const splitByWords = line.split(" ");
+    return splitByWords.map((word, index) => {
+      const prefix = index !== 0 ? " " : "";
+      const postfix = index === splitByWords.length - 1 ? <br /> : "";
+      if (word.startsWith("@")) {
+        return (
+          <span key={`${word}${index}`}>
+            {prefix}
+            <Link
+              className="text-blue-500 decoration-blue-500 hover:underline"
+              href={`/${word.slice(1)}`}
+            >
+              @{word.slice(1)}
+            </Link>
+            {postfix}
+          </span>
+        );
+      }
+      return (
+        <span key={`${word}${index}`}>
+          {prefix}
+          {word}
+          {postfix}
+        </span>
+      );
+    });
+  });
+  return <span className="whitespace-pre-wrap">{elements}</span>;
 };
