@@ -14,6 +14,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import type { TweetWithAuthorAndLikes } from "prisma/customTypes";
+import type { ReactNode } from "react";
 import Loader from "~/components/loader";
 import {
   DropdownMenu,
@@ -26,6 +27,7 @@ import useTweeterDialog from "~/features/Tweeter/hooks/useTweeterDialog";
 import { Tweeter } from "~/features/Tweeter/tweeter";
 import { useDeleteTweet } from "~/hooks/useDeleteTweet";
 import { useLikeTweet } from "~/hooks/useLikeTweet";
+import { cn } from "~/lib/utils";
 import { api } from "~/utils/api";
 import { MyAvatar } from "./my-avatar";
 import { UserTag } from "./user-tag";
@@ -194,12 +196,7 @@ export const Tweet = ({
                 <div className="flex items-center gap-1">
                   <UserTag user={tweet.author} horizontal={isOnFeed} />
                   {isOnFeed && (
-                    <>
-                      <span className="text-slate-500">·</span>
-                      <span className="text-sm text-slate-500">
-                        {tweetFeedDate(tweet.createdAt)}
-                      </span>
-                    </>
+                    <TweetDate tweet={tweet} className="text-sm" isOnFeed />
                   )}
                 </div>
                 {tweet.author.id === session?.user?.id && (
@@ -239,9 +236,7 @@ export const Tweet = ({
               <TweetText text={tweet.text} />
             </div>
             <div className="flex">
-              <span className="text-base text-slate-500">
-                {tweetDate(tweet.createdAt)}
-              </span>
+              <TweetDate tweet={tweet} className="text-base" />
             </div>
             <Separator />
             <TweetActionsAndStatuses tweet={tweet} />
@@ -491,4 +486,38 @@ const TweetText = ({ text }: { text: string }) => {
     });
   });
   return <span className="whitespace-pre-wrap">{elements}</span>;
+};
+
+const TweetDate = ({
+  tweet,
+  className,
+  isOnFeed,
+}: {
+  tweet: TweetWithAuthorAndLikes;
+  className: string;
+  isOnFeed?: boolean;
+}) => {
+  const Wrapper = ({ children }: { children: ReactNode }) =>
+    isOnFeed ? (
+      <Link
+        href={`/${tweet?.author?.handle}/status/${tweet.id}`}
+        className="text-slate-500 hover:underline"
+      >
+        {children}
+      </Link>
+    ) : (
+      <>{children}</>
+    );
+  return (
+    <>
+      {isOnFeed && <span className="text-slate-500">·</span>}
+      <Wrapper>
+        <span className={cn("text-slate-500", className)}>
+          {isOnFeed
+            ? tweetFeedDate(tweet.createdAt)
+            : tweetDate(tweet.createdAt)}
+        </span>
+      </Wrapper>
+    </>
+  );
 };
