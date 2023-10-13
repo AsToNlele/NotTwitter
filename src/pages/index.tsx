@@ -1,6 +1,6 @@
 import type { GetServerSidePropsContext } from "next";
-import { Feed } from "~/features/Feed/feed";
 import { Layout } from "~/components/layouts/layout";
+import { Feed } from "~/features/Feed/feed";
 import { getServerAuthSession } from "~/server/auth";
 
 export default function Home() {

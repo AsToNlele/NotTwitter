@@ -1,4 +1,4 @@
-import { Loader2 } from "lucide-react";
+import Loader from "~/components/loader";
 import { Tweet } from "~/components/tweets";
 import { useProfileLikes } from "~/features/Profile/hooks/useProfileLikes";
 
@@ -12,9 +12,7 @@ const ProfileLikes = ({ handle }: ProfileLikesProps) => {
   return (
     <>
       {isLoading ? (
-        <div className="mt-4 flex grow items-center justify-center">
-          <Loader2 className="animate-spin" />
-        </div>
+        <Loader top />
       ) : (
         data?.map((tweet) => <Tweet key={tweet.id} tweet={tweet} isOnFeed />) ||
         null

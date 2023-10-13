@@ -5,16 +5,16 @@ import {
   BookmarkIcon,
   BoxIcon,
   Heart,
-  Loader2,
   MessageCircle,
   MoreHorizontal,
   Repeat2,
   ShareIcon,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import type { TweetWithAuthorAndLikes } from "prisma/customTypes";
-import { Tweeter } from "~/features/Tweeter/tweeter";
+import Loader from "~/components/loader";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,13 +22,13 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Separator } from "~/components/ui/separator";
+import useTweeterDialog from "~/features/Tweeter/hooks/useTweeterDialog";
+import { Tweeter } from "~/features/Tweeter/tweeter";
 import { useDeleteTweet } from "~/hooks/useDeleteTweet";
 import { useLikeTweet } from "~/hooks/useLikeTweet";
-import useTweeterDialog from "~/features/Tweeter/hooks/useTweeterDialog";
 import { api } from "~/utils/api";
 import { MyAvatar } from "./my-avatar";
 import { UserTag } from "./user-tag";
-import Link from "next/link";
 
 dayjs.extend(relativeTime);
 
@@ -37,9 +37,7 @@ export const Tweets = () => {
   return (
     <>
       {isLoading ? (
-        <div className="mt-4 flex grow items-center justify-center">
-          <Loader2 className="animate-spin" />
-        </div>
+        <Loader top />
       ) : (
         data?.map((tweet) => <Tweet key={tweet.id} tweet={tweet} isOnFeed />) ||
         null
@@ -75,9 +73,10 @@ export const DeletedTweet = ({
   isParentTweet = false,
   isMainTweet = false,
 }: TweetProps) => {
-  const { data: commentData } = api.tweet.getComments.useQuery({
-    tweet: tweet.id,
-  });
+  const { data: commentData, isLoading: isLoadingComments } =
+    api.tweet.getComments.useQuery({
+      tweet: tweet.id,
+    });
   return (
     <>
       <div
@@ -120,8 +119,12 @@ export const DeletedTweet = ({
         )}
       </div>
       {!isOnFeed &&
-        commentData?.map((comment) => (
-          <Tweet key={tweet.id} tweet={comment} isOnFeed />
+        (isLoadingComments ? (
+          <Loader />
+        ) : (
+          commentData?.map((comment) => (
+            <Tweet key={tweet.id} tweet={comment} isOnFeed />
+          ))
         ))}
       <div></div>
     </>
@@ -136,14 +139,15 @@ export const Tweet = ({
   isMainTweet = false,
 }: TweetProps) => {
   const router = useRouter();
-  const { data: commentData } = api.tweet.getComments.useQuery(
-    {
-      tweet: tweet.id,
-    },
-    {
-      enabled: !isOnFeed,
-    },
-  );
+  const { data: commentData, isLoading: isLoadingComments } =
+    api.tweet.getComments.useQuery(
+      {
+        tweet: tweet.id,
+      },
+      {
+        enabled: !isOnFeed,
+      },
+    );
 
   const deleteTweet = useDeleteTweet();
   const { data: session } = useSession();
@@ -247,10 +251,13 @@ export const Tweet = ({
         )}
       </div>
       {!isOnFeed &&
-        commentData?.map((comment) => (
-          <Tweet key={tweet.id} tweet={comment} isOnFeed />
+        (isLoadingComments ? (
+          <Loader />
+        ) : (
+          commentData?.map((comment) => (
+            <Tweet key={tweet.id} tweet={comment} isOnFeed />
+          ))
         ))}
-      <div></div>
     </>
   );
 };

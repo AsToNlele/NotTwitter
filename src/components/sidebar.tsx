@@ -1,6 +1,8 @@
-import { Home as HomeIcon, User2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { Logo } from "./logo";
+import { Home as HomeIcon, User2 } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
+import { MyAvatar } from "~/components/my-avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,13 +11,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { MyAvatar } from "~/components/my-avatar";
-import { UserTag } from "./user-tag";
-import { signOut, useSession } from "next-auth/react";
-import { Button } from "./ui/button";
-import Link from "next/link";
 import useTweeterDialog from "~/features/Tweeter/hooks/useTweeterDialog";
 import { TweeterDialog } from "~/features/Tweeter/tweeter-dialog";
+import { Logo } from "./logo";
+import { Button } from "./ui/button";
+import { UserTag } from "./user-tag";
 
 const SidebarItem = ({
   icon: Icon,

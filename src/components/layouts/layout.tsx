@@ -1,8 +1,8 @@
 import { ArrowLeft } from "lucide-react";
 import Head from "next/head";
 import Link from "next/link";
-import { FeedBottomMobile } from "~/features/Feed/feed-bottom-mobile";
 import { Sidebar } from "~/components/sidebar";
+import { FeedBottomMobile } from "~/features/Feed/feed-bottom-mobile";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -11,6 +11,7 @@ interface LayoutProps {
   topBarText?: string;
   backButtonHref?: string;
   hasBottomBar?: boolean;
+  isLoading?: boolean;
 }
 
 export const Layout = ({

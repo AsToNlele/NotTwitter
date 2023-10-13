@@ -2,6 +2,7 @@ import type { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
 import { Layout } from "~/components/layouts/layout";
+import Loader from "~/components/loader";
 import { Tweet } from "~/components/tweets";
 import { Separator } from "~/components/ui/separator";
 import { getServerAuthSession } from "~/server/auth";
@@ -52,8 +53,11 @@ const TweetPage = () => {
           : "/"
       }
       topBarText="Tweet"
+      title="Tweet | NotTwitter"
     >
-      {!isLoading && isSuccess && (
+      {isLoading ? (
+        <Loader top />
+      ) : (
         <div className="pt-4">
           {tweetWithParents?.parentTweets?.map((parent) => (
             <div key={parent.id}>
