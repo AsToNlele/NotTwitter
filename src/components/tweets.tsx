@@ -179,7 +179,7 @@ export const Tweet = ({
       >
         <div className="flex gap-2">
           <div className="flex flex-col">
-            <MyAvatar image={tweet.author.image} />
+            <MyAvatar image={tweet.author.image} handle={tweet.author.handle} />
             {isParentTweet && (
               <Separator
                 orientation="vertical"
